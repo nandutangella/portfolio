@@ -21,15 +21,16 @@
       const [error, setError] = useState(null);
       const [modalProject, setModalProject] = useState(null);
       const [currentImageIndex, setCurrentImageIndex] = useState(0);
+      const [imageLoading, setImageLoading] = useState(true);
 
       useEffect(() => {
         const fetchProjects = async () => {
           try {
-            // Replace with your Apps Script Web app URL
             const response = await axios.get('https://script.google.com/macros/s/AKfycbxVwkfaRHsZU1i4zlHxu5gjthhrZVyxgNcWjb580pyDFM80CZ8Sbqrv_FvhJmJpXg5AYQ/exec');
             if (response.data.error) {
               throw new Error(response.data.error);
             }
+            console.log('Projects:', response.data);
             setProjects(response.data);
             setLoading(false);
           } catch (err) {
@@ -44,6 +45,7 @@
       const openModal = (project) => {
         setModalProject(project);
         setCurrentImageIndex(0);
+        setImageLoading(true);
       };
 
       const closeModal = () => {
@@ -54,12 +56,14 @@
         setCurrentImageIndex((prev) => 
           prev + 1 < modalProject.images.length ? prev + 1 : 0
         );
+        setImageLoading(true);
       };
 
       const prevImage = () => {
         setCurrentImageIndex((prev) => 
           prev - 1 >= 0 ? prev - 1 : modalProject.images.length - 1
         );
+        setImageLoading(true);
       };
 
       return (
@@ -123,11 +127,13 @@
                 </button>
                 <h3 className="text-xl font-semibold mb-4">{modalProject.title}</h3>
                 <div className="relative">
+                  {imageLoading && <p className="text-center text-gray-600">Loading image...</p>}
                   <img
                     src={modalProject.images[currentImageIndex]?.url}
                     alt={modalProject.images[currentImageIndex]?.name}
                     className="w-full h-96 object-contain"
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found'; }}
+                    onLoad={() => setImageLoading(false)}
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found'; setImageLoading(false); }}
                   />
                   {modalProject.images.length > 1 && (
                     <>
@@ -154,7 +160,7 @@
                   {modalProject.images.map((image, index) => (
                     <img
                       key={index}
-                      src={image.url}
+                      src={image.url || 'https://via.placeholder.com/100x100?text=Thumbnail'}
                       alt={image.name}
                       className={`w-24 h-24 object-cover cursor-pointer rounded ${index === currentImageIndex ? 'border-2 border-blue-600' : ''}`}
                       onClick={() => setCurrentImageIndex(index)}
