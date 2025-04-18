@@ -192,9 +192,7 @@ const Portfolio = () => {
                 return (
                   <div
                     key={index}
-                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg overflow-hidden transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl ${
-                      imageStatus?.loaded ? 'animate-bottom-to-top' : ''
-                    }`} // Added overflow-hidden to preserve rounded corners
+                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg overflow-hidden transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl`} // Removed animate-bottom-to-top
                     style={{ borderRadius: '0.5rem' }} // Explicitly set border radius
                     onClick={() => openModal(project)} // Ensure modal opens on click
                   >
