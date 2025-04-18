@@ -54,6 +54,7 @@ const Portfolio = () => {
   const [modalProject, setModalProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageStatuses, setImageStatuses] = useState({}); // Track image loading status
+  const [pageLoaded, setPageLoaded] = useState(false); // Track if the page has loaded
 
   const touchStartX = useRef(null); // Track the starting X position of a touch
   const touchEndX = useRef(null); // Track the ending X position of a touch
@@ -103,7 +104,11 @@ const Portfolio = () => {
         setLoading(false);
       }
     };
+
     fetchProjects();
+
+    // Trigger the animation after the component mounts
+    setTimeout(() => setPageLoaded(true), 100); // Delay to ensure animation is visible
   }, []);
 
   const openModal = (project) => {
@@ -129,27 +134,33 @@ const Portfolio = () => {
     );
   };
 
+  const handleImageLoad = (url) => {
+    setImageStatuses((prev) => ({
+      ...prev,
+      [url]: { loaded: true },
+    }));
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 font-sans flex flex-col"> {/* Added flex and min-h-screen */}
+    <div className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white animate-radial-breathing-vertical font-sans flex flex-col"> {/* Updated to animate-radial-breathing-vertical */}
       {/* Hero Section */}
-      <header className="animate-abstract-gradient text-white py-20">
+      <header className="text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 uppercase tracking-widest text-gray-100 drop-shadow-lg"> {/* Adjusted text sizes */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg"> {/* Adjusted text color */}
             Nandu Tangella
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed animate-slide-up">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-red-500 to-purple-500 font-bold animate-gradient">
+            <span className="bg-clip-text text-transparent animate-metallic-text-slow font-bold"> {/* Updated to slow metallic animation */}
               UI / UX Designer
             </span>
           </p>
-          {/* Removed "View My Work" button */}
         </div>
       </header>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-16 bg-gradient-to-b from-gray-100 to-gray-200 flex-grow"> {/* Added flex-grow */}
+      <section id="portfolio" className="py-16 flex-grow"> {/* Removed separate background */}
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-400">
+          <h2 className="text-4xl font-bold text-center mb-12 text-gray-100"> {/* Adjusted text color */}
             Portfolio
           </h2>
           {loading ? (
@@ -157,7 +168,9 @@ const Portfolio = () => {
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
+                  className={`bg-white rounded-lg shadow-md overflow-hidden animate-pulse ${
+                    pageLoaded ? 'animate-placeholder-bottom-to-top' : ''
+                  }`} // Add animation class if the page has loaded
                 >
                   <div className="w-full h-48 bg-gray-300"></div>
                   <div className="p-6">
@@ -179,7 +192,9 @@ const Portfolio = () => {
                 return (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-2xl border border-gray-200"
+                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl ${
+                      imageStatus?.loaded ? 'animate-bottom-to-top' : ''
+                    }`} // Add animation class when the image is loaded
                     onClick={() => openModal(project)} // Ensure modal opens on click
                   >
                     {firstImage ? (
@@ -187,19 +202,23 @@ const Portfolio = () => {
                         <img
                           src={firstImage.url}
                           alt={project.title}
-                          className="w-full h-48 object-cover cursor-pointer rounded-t-lg blur-sm transition duration-500 ease-in-out" // Add blur effect
+                          className="w-full h-48 object-cover cursor-pointer rounded-t-lg blur-sm transition duration-500 ease-in-out" // Edge-to-edge top, right, and left
                           loading="lazy" // Add lazy loading
-                          onLoad={(e) => e.target.classList.remove('blur-sm')} // Remove blur on load
+                          onLoad={(e) => {
+                            e.target.classList.remove('blur-sm'); // Remove blur effect on load
+                            handleImageLoad(firstImage.url); // Trigger animation on load
+                          }}
                           onError={(e) => {
                             e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png';
                             e.target.classList.remove('blur-sm'); // Remove blur even if fallback is used
+                            handleImageLoad(firstImage.url); // Trigger animation even if fallback is used
                           }}
                         />
                       </div>
                     ) : (
-                      <div className="w-full h-48 bg-gray-300"></div>
+                      <div className="w-full h-48 bg-gray-300 rounded-t-lg"></div> // Adjusted for edge-to-edge
                     )}
-                    <div className="p-6">
+                    <div className="p-4">
                       <h3 className="text-2xl font-bold mb-3 text-gray-800 cursor-pointer uppercase tracking-wide">
                         {project.title}
                       </h3>
@@ -222,27 +241,27 @@ const Portfolio = () => {
           onClick={closeModal}
         >
           <div 
-            className="bg-white w-full h-full mx-0 relative transform transition-all duration-300" // Removed bg-opacity-90 and backdrop-blur-lg
+            className="bg-white w-full h-full mx-0 relative transform transition-all duration-300 overflow-hidden" // Added overflow-hidden
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart} // Add touch start handler
             onTouchEnd={handleTouchEnd} // Add touch end handler
           >
-            {/* Fixed Close Button Above Header */}
-            <button
-              onClick={closeModal}
-              className="fixed top-2 right-4 text-gray-600 hover:text-gray-800 focus:outline-none bg-white p-2 rounded-full shadow-md z-[100]" // Increased z-index
-              aria-label="Close Modal"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
             {/* Fixed Header */}
-            <div className="fixed top-0 left-0 right-0 bg-white bg-opacity-90 z-50 shadow-md"> {/* Header remains below the close button */}
-              <h3 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 py-4 px-12"> {/* Adjusted text sizes */}
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center gap-4 z-50"> {/* Chip-like design */}
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-grow"> {/* Adjusted text sizes */}
                 {modalProject.title}
               </h3>
+            </div>
+            <div className="fixed top-4 right-4 bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-full p-2 z-50"> {/* Chip for X */}
+              <button
+                onClick={closeModal}
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-2 rounded-full shadow-md transition-all duration-300 hover:scale-110"
+                aria-label="Close Modal"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
             {/* Scrollable Image Container */}
@@ -272,42 +291,40 @@ const Portfolio = () => {
                   <p className="text-gray-600">No image available</p>
                 </div>
               )}
-
-              {/* Left Arrow */}
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                aria-label="Previous Image"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              {/* Right Arrow */}
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                aria-label="Next Image"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
             </div>
 
             {/* Fixed Bottom Navigation */}
             {modalProject.images.length > 1 && (
-              <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-4 z-50 py-2"> {/* Removed background and shadow */}
-                {modalProject.images.map((_, index) => (
-                  <span
-                    key={index}
-                    className={`w-3 h-3 rounded-full cursor-pointer ${
-                      index === currentImageIndex ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
-                    onClick={() => setCurrentImageIndex(index)}
-                  ></span>
-                ))}
+              <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center gap-4 z-50"> {/* Adjusted bg-opacity */}
+                <button
+                  onClick={prevImage}
+                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-2 rounded-full shadow-md transition-all duration-300 hover:scale-110" // Updated arrow color
+                  aria-label="Previous Image"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <div className="flex gap-2">
+                  {modalProject.images.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`w-3 h-3 rounded-full cursor-pointer ${
+                        index === currentImageIndex ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 'bg-gray-300'
+                      }`} // Updated active dot color
+                      onClick={() => setCurrentImageIndex(index)}
+                    ></span>
+                  ))}
+                </div>
+                <button
+                  onClick={nextImage}
+                  className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-2 rounded-full shadow-md transition-all duration-300 hover:scale-110" // Updated arrow color
+                  aria-label="Next Image"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
             )}
             {/* Removed Bottom Close Button */}
@@ -316,7 +333,7 @@ const Portfolio = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-gray-700 py-12 mt-auto"> {/* Added mt-auto */}
+      <footer className="bg-gray-100 text-gray-600 py-12 mt-auto"> {/* Added mt-auto */}
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Let's Connect</h3>
