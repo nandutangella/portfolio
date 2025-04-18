@@ -150,7 +150,7 @@ const Portfolio = () => {
             Nandu Tangella
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed animate-slide-up">
-            <span className="bg-clip-text text-transparent animate-metallic-text-slow font-bold"> {/* Updated to slow metallic animation */}
+            <span className="bg-clip-text text-transparent animate-metallic-text-slow font-bold text-2xl md:text-3xl"> {/* Increased font size */}
               UI / UX Designer
             </span>
           </p>
@@ -192,9 +192,10 @@ const Portfolio = () => {
                 return (
                   <div
                     key={index}
-                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl ${
+                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg overflow-hidden transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl ${
                       imageStatus?.loaded ? 'animate-bottom-to-top' : ''
-                    }`} // Add animation class when the image is loaded
+                    }`} // Added overflow-hidden to preserve rounded corners
+                    style={{ borderRadius: '0.5rem' }} // Explicitly set border radius
                     onClick={() => openModal(project)} // Ensure modal opens on click
                   >
                     {firstImage ? (
