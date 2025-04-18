@@ -203,15 +203,15 @@ const Portfolio = () => {
                         <img
                           src={firstImage.url}
                           alt={project.title}
-                          className="w-full h-48 object-cover cursor-pointer rounded-t-lg blur-sm transition duration-500 ease-in-out" // Edge-to-edge top, right, and left
+                          className={`w-full h-48 object-cover cursor-pointer rounded-t-lg transition-opacity duration-500 ease-in-out ${
+                            imageStatuses[firstImage.url]?.loaded ? 'opacity-100' : 'opacity-0'
+                          }`} // Removed blur-sm class
                           loading="lazy" // Add lazy loading
                           onLoad={(e) => {
-                            e.target.classList.remove('blur-sm'); // Remove blur effect on load
                             handleImageLoad(firstImage.url); // Trigger animation on load
                           }}
                           onError={(e) => {
                             e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png';
-                            e.target.classList.remove('blur-sm'); // Remove blur even if fallback is used
                             handleImageLoad(firstImage.url); // Trigger animation even if fallback is used
                           }}
                         />
