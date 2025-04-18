@@ -201,9 +201,7 @@ const Portfolio = () => {
                         <img
                           src={firstImage.url}
                           alt={project.title}
-                          className={`w-full h-48 object-cover cursor-pointer rounded-t-lg transition-opacity duration-500 ease-in-out ${
-                            imageStatuses[firstImage.url]?.loaded ? 'opacity-100' : 'opacity-0'
-                          }`} // Removed blur-sm class
+                          className="w-full h-48 object-cover cursor-pointer rounded-t-lg" // Removed transition-opacity and opacity classes
                           loading="lazy" // Add lazy loading
                           onLoad={(e) => {
                             handleImageLoad(firstImage.url); // Trigger animation on load
