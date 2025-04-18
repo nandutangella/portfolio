@@ -1,4 +1,4 @@
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React; // Import useRef for touch handling
 
 // Utility to retry image loading
 const loadImageWithRetry = (url, retries = 3, delay = 1000) => {
@@ -55,6 +55,33 @@ const Portfolio = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageStatuses, setImageStatuses] = useState({}); // Track image loading status
 
+  const touchStartX = useRef(null); // Track the starting X position of a touch
+  const touchEndX = useRef(null); // Track the ending X position of a touch
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    if (touchStartX.current !== null && touchEndX.current !== null) {
+      const diffX = touchStartX.current - touchEndX.current;
+      if (Math.abs(diffX) > 50) { // Minimum swipe distance
+        if (diffX > 0) {
+          nextImage(); // Swipe left to go to the next image
+        } else {
+          prevImage(); // Swipe right to go to the previous image
+        }
+      }
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -103,11 +130,11 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    <div className="min-h-screen bg-gray-100 font-sans flex flex-col"> {/* Added flex and min-h-screen */}
       {/* Hero Section */}
       <header className="animate-abstract-gradient text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 uppercase tracking-widest text-gray-100 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 uppercase tracking-widest text-gray-100 drop-shadow-lg"> {/* Adjusted text sizes */}
             Nandu Tangella
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed animate-slide-up">
@@ -120,7 +147,7 @@ const Portfolio = () => {
       </header>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-16 bg-gradient-to-b from-gray-100 to-gray-200">
+      <section id="portfolio" className="py-16 bg-gradient-to-b from-gray-100 to-gray-200 flex-grow"> {/* Added flex-grow */}
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-400">
             Portfolio
@@ -192,137 +219,104 @@ const Portfolio = () => {
       {modalProject && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50"
-          onClick={closeModal} // Close modal when clicking outside
+          onClick={closeModal}
         >
           <div 
-            className="bg-white bg-opacity-90 backdrop-blur-lg rounded-2xl shadow-2xl max-w-4xl w-full mx-4 p-10 relative transform transition-all duration-300 scale-100 max-h-screen overflow-y-auto"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+            className="bg-white w-full h-full mx-0 relative transform transition-all duration-300" // Removed bg-opacity-90 and backdrop-blur-lg
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart} // Add touch start handler
+            onTouchEnd={handleTouchEnd} // Add touch end handler
           >
-            {/* Improved Close Button */}
+            {/* Fixed Close Button Above Header */}
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none bg-white p-2 rounded-full shadow-md"
+              className="fixed top-2 right-4 text-gray-600 hover:text-gray-800 focus:outline-none bg-white p-2 rounded-full shadow-md z-[100]" // Increased z-index
               aria-label="Close Modal"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <h3 className="text-3xl font-bold mb-8 text-center text-gray-800">{modalProject.title}</h3>
-            <div className="relative bg-white rounded-lg"> {/* Added rounded-lg for rounded edges */}
+
+            {/* Fixed Header */}
+            <div className="fixed top-0 left-0 right-0 bg-white bg-opacity-90 z-50 shadow-md"> {/* Header remains below the close button */}
+              <h3 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 py-4 px-12"> {/* Adjusted text sizes */}
+                {modalProject.title}
+              </h3>
+            </div>
+
+            {/* Scrollable Image Container */}
+            <div className="absolute top-16 bottom-16 left-0 right-0 overflow-y-auto flex items-center justify-center pt-16 group">
               {modalProject.images[currentImageIndex] ? (
                 imageStatuses[modalProject.images[currentImageIndex].url]?.loading ? (
-                  <div className="w-full h-[30rem] flex items-center justify-center"> {/* Adjusted height */}
+                  <div className="flex items-center justify-center w-full h-full"> {/* Adjusted to fill container */}
                     <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                   </div>
                 ) : imageStatuses[modalProject.images[currentImageIndex].url]?.error ? (
-                  <div className="w-full h-[30rem] flex items-center justify-center bg-gray-100">
+                  <div className="flex items-center justify-center w-full h-full bg-gray-100">
                     <p className="text-red-600 text-center">Failed to load image: {modalProject.images[currentImageIndex].name}</p>
                   </div>
                 ) : (
                   <img
                     src={modalProject.images[currentImageIndex].url}
                     alt={modalProject.images[currentImageIndex].name}
-                    className="w-full h-[30rem] object-contain rounded-lg shadow-lg border border-gray-300"
+                    className="max-h-full max-w-full object-contain rounded-lg shadow-lg border border-gray-300" // Ensure image fits within container
                     onError={(e) => { e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png'; }}
                   />
                 )
               ) : (
-                <div className="w-full h-[30rem] flex items-center justify-center bg-gray-100">
+                <div className="flex items-center justify-center w-full h-full bg-gray-100">
                   <p className="text-gray-600">No image available</p>
                 </div>
               )}
-              {modalProject.images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 text-white p-3 rounded-full hover:bg-opacity-90 focus:outline-none shadow-lg transition-transform duration-200 hover:scale-110"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 text-white p-3 rounded-full hover:bg-opacity-90 focus:outline-none shadow-lg transition-transform duration-200 hover:scale-110"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </>
-              )}
-            </div>
-            <div className="mt-8 flex flex-wrap gap-4 justify-center">
-              {window.innerWidth <= 768 ? ( // Check if the screen width is mobile-sized
-                <div className="flex gap-2">
-                  {modalProject.images.map((_, index) => (
-                    <span
-                      key={index}
-                      className={`w-3 h-3 rounded-full cursor-pointer ${
-                        index === currentImageIndex ? 'bg-blue-600' : 'bg-gray-300'
-                      }`}
-                      onClick={() => setCurrentImageIndex(index)}
-                    ></span>
-                  ))}
-                </div>
-              ) : (
-                modalProject.images.map((image, index) => {
-                  const imageStatus = imageStatuses[image.url];
-                  return (
-                    <div key={index} className="relative">
-                      {imageStatus?.loading ? (
-                        <div className="w-24 h-24 flex items-center justify-center">
-                          <svg className="animate-spin h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                        </div>
-                      ) : imageStatus?.error ? (
-                        <img
-                          src="https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-100x100.png"
-                          alt={image.name}
-                          className={`w-24 h-24 object-cover cursor-pointer rounded-lg shadow-md border border-gray-300 ${
-                            index === currentImageIndex ? 'border-2 border-blue-600' : ''
-                          }`}
-                          onClick={() => setCurrentImageIndex(index)}
-                        />
-                      ) : (
-                        <img
-                          src={image.url}
-                          alt={image.name}
-                          className={`w-24 h-24 object-cover cursor-pointer rounded-lg shadow-md border border-gray-300 ${
-                            index === currentImageIndex ? 'border-2 border-blue-600' : ''
-                          }`}
-                          onClick={() => setCurrentImageIndex(index)}
-                          onError={(e) => {
-                            e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-100x100.png';
-                          }}
-                        />
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            {/* Bottom Close Button */}
-            <div className="mt-8 text-center">
+
+              {/* Left Arrow */}
               <button
-                onClick={closeModal}
-                className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-900 transition"
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                aria-label="Previous Image"
               >
-                Close
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              {/* Right Arrow */}
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                aria-label="Next Image"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
               </button>
             </div>
+
+            {/* Fixed Bottom Navigation */}
+            {modalProject.images.length > 1 && (
+              <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-4 z-50 py-2"> {/* Removed background and shadow */}
+                {modalProject.images.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`w-3 h-3 rounded-full cursor-pointer ${
+                      index === currentImageIndex ? 'bg-blue-600' : 'bg-gray-300'
+                    }`}
+                    onClick={() => setCurrentImageIndex(index)}
+                  ></span>
+                ))}
+              </div>
+            )}
+            {/* Removed Bottom Close Button */}
           </div>
         </div>
       )}
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-gray-700 py-12"> {/* Changed background to light */}
+      <footer className="bg-gray-100 text-gray-700 py-12 mt-auto"> {/* Added mt-auto */}
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Let's Connect</h3>
