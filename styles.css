@@ -1,0 +1,48 @@
+@keyframes gradient-slide {
+  0% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 100%;
+  animation: gradient-slide 15s ease-in-out infinite; /* Slightly faster color transition */
+}
+
+@keyframes abstract-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-abstract-gradient {
+  background: linear-gradient(270deg, #ff7eb3, #ff758c, #ff6a5e, #ff9a5e, #ffcd5e, #ff7eb3);
+  background-size: 600% 600%; /* Increased size for more visible transitions */
+  animation: abstract-gradient 20s ease infinite; /* Slow and smooth abstract animation */
+}
+
+.thumbnail-hover {
+  overflow: hidden;
+  position: relative;
+}
+
+.thumbnail-hover img {
+  transition: transform 5s ease-in-out;
+  transform: scale(1);
+}
+
+.thumbnail-hover:hover img {
+  transform: scale(1.1);
+}
