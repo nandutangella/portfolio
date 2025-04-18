@@ -168,9 +168,7 @@ const Portfolio = () => {
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
-                  className={`bg-white rounded-lg shadow-md overflow-hidden animate-pulse ${
-                    pageLoaded ? 'animate-placeholder-bottom-to-top' : ''
-                  }`} // Add animation class if the page has loaded
+                  className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse" // Removed animate-placeholder-bottom-to-top
                 >
                   <div className="w-full h-48 bg-gray-300"></div>
                   <div className="p-6">
