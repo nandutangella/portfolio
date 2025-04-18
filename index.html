@@ -265,7 +265,7 @@
                   </svg>
                 </button>
                 <h3 className="text-3xl font-bold mb-8 text-center text-gray-800">{modalProject.title}</h3>
-                <div className="relative">
+                <div className="relative bg-white rounded-lg"> {/* Added rounded-lg for rounded edges */}
                   {modalProject.images[currentImageIndex] ? (
                     imageStatuses[modalProject.images[currentImageIndex].url]?.loading ? (
                       <div className="w-full h-[30rem] flex items-center justify-center"> {/* Adjusted height */}
