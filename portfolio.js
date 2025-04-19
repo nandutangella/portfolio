@@ -83,6 +83,21 @@ const Portfolio = () => {
     touchEndX.current = null;
   };
 
+  const loadingMessages = [
+    "Fetching creativity, please wait...",
+    "Designing brilliance, hold tight!",
+    "Loading pixels of perfection...",
+    "Have you smiled today? 😊",
+    "What's your favorite color?",
+    "Dreaming up designs for you...",
+    "Ever wondered how UI meets UX?",
+    "Loading... What's your next big idea?",
+  ];
+
+  const getRandomLoadingMessage = () => {
+    return loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+  };
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -110,6 +125,16 @@ const Portfolio = () => {
     // Trigger the animation after the component mounts
     setTimeout(() => setPageLoaded(true), 100); // Delay to ensure animation is visible
   }, []);
+
+  useEffect(() => {
+    if (modalProject) {
+      const preventScroll = (e) => e.preventDefault();
+      document.body.addEventListener('touchmove', preventScroll, { passive: false });
+      return () => {
+        document.body.removeEventListener('touchmove', preventScroll);
+      };
+    }
+  }, [modalProject]);
 
   const openModal = (project) => {
     setModalProject(project);
@@ -144,7 +169,7 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white animate-radial-breathing-vertical font-sans flex flex-col"> {/* Updated to animate-radial-breathing-vertical */}
       {/* Hero Section */}
-      <header className="text-white py-20">
+      <header className="text-white py-16"> {/* Reduced padding from py-20 to py-16 */}
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg"> {/* Adjusted text color */}
             Nandu Tangella
@@ -158,25 +183,17 @@ const Portfolio = () => {
       </header>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-16 flex-grow"> {/* Removed separate background */}
+      <section id="portfolio" className="py-6 flex-grow"> {/* Reduced padding from py-8 to py-6 */}
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-100"> {/* Adjusted text color */}
+          <h2 className="text-4xl font-bold text-center mb-6 text-gray-100"> {/* Reduced bottom margin from mb-8 to mb-6 */}
             Portfolio
           </h2>
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse" // Removed animate-placeholder-bottom-to-top
-                >
-                  <div className="w-full h-48 bg-gray-300"></div>
-                  <div className="p-6">
-                    <div className="h-6 bg-gray-300 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-300 rounded"></div>
-                  </div>
-                </div>
-              ))}
+            <div className="flex justify-center items-center h-64">
+              <div className="flex flex-col items-center">
+                <div className="text-6xl animate-bounce mb-4">🐱</div>
+                <p className="text-gray-600 text-lg">{getRandomLoadingMessage()}</p>
+              </div>
             </div>
           ) : error ? (
             <p className="text-center text-red-600">{error}</p>
@@ -186,39 +203,35 @@ const Portfolio = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project, index) => {
                 const firstImage = project.images[0];
-                const imageStatus = firstImage ? imageStatuses[firstImage.url] : null;
                 return (
                   <div
                     key={index}
-                    className={`bg-white bg-opacity-70 backdrop-blur-md shadow-lg rounded-lg overflow-hidden transform transition hover:bg-opacity-100 hover:scale-105 hover:shadow-2xl`} // Removed animate-bottom-to-top
-                    style={{ borderRadius: '0.5rem' }} // Explicitly set border radius
-                    onClick={() => openModal(project)} // Ensure modal opens on click
+                    className="relative bg-white bg-opacity-80 backdrop-blur-md shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-2xl group cursor-pointer" // Added cursor-pointer
+                    style={{ borderRadius: '1rem' }} // Rounded corners
+                    onClick={() => openModal(project)}
                   >
                     {firstImage ? (
-                      <div className="thumbnail-hover">
+                      <div className="relative overflow-hidden">
                         <img
                           src={firstImage.url}
                           alt={project.title}
-                          className="w-full h-48 object-cover cursor-pointer rounded-t-lg" // Removed transition-opacity and opacity classes
-                          loading="lazy" // Add lazy loading
-                          onLoad={(e) => {
-                            handleImageLoad(firstImage.url); // Trigger animation on load
-                          }}
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                          loading="lazy"
                           onError={(e) => {
                             e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png';
-                            handleImageLoad(firstImage.url); // Trigger animation even if fallback is used
                           }}
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-full h-48 bg-gray-300 rounded-t-lg"></div> // Adjusted for edge-to-edge
+                      <div className="w-full h-48 bg-gray-300 rounded-t-lg"></div>
                     )}
-                    <div className="p-4">
-                      <h3 className="text-2xl font-bold mb-3 text-gray-800 cursor-pointer uppercase tracking-wide">
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors duration-300 cursor-pointer"> {/* Added cursor-pointer */}
                         {project.title}
                       </h3>
-                      <p className="text-gray-600 leading-loose cursor-pointer border-t border-gray-300 pt-2">
-                        {project.description}
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {project.description} {/* Removed line-clamp-3 to show full text */}
                       </p>
                     </div>
                   </div>
