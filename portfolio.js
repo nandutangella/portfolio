@@ -171,12 +171,22 @@ const Portfolio = () => {
       {/* Hero Section */}
       <header className="text-white py-16"> {/* Reduced padding from py-20 to py-16 */}
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg"> {/* Adjusted text color */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg animate-zoom-in">
+            {/* Added animate-zoom-in */}
             Nandu Tangella
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed animate-slide-up">
-            <span className="bg-clip-text text-transparent animate-metallic-text-slow font-bold text-2xl md:text-3xl"> {/* Increased font size */}
-              UI / UX Designer
+          <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed animate-zoom-in">
+            {/* Added animate-zoom-in */}
+            <span
+              className="relative inline-block font-extrabold text-3xl md:text-4xl uppercase tracking-wide text-white"
+            >
+              <span
+                className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 blur-lg opacity-50"
+                aria-hidden="true"
+              ></span>
+              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                UI / UX Designer
+              </span>
             </span>
           </p>
         </div>
@@ -185,7 +195,8 @@ const Portfolio = () => {
       {/* Portfolio Section */}
       <section id="portfolio" className="py-6 flex-grow"> {/* Reduced padding from py-8 to py-6 */}
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-6 text-gray-100"> {/* Reduced bottom margin from mb-8 to mb-6 */}
+          <h2 className="text-4xl font-bold text-center mb-6 text-gray-100 animate-zoom-in">
+            {/* Added animate-zoom-in */}
             Portfolio
           </h2>
           {loading ? (
@@ -227,11 +238,13 @@ const Portfolio = () => {
                       <div className="w-full h-48 bg-gray-300 rounded-t-lg"></div>
                     )}
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors duration-300 cursor-pointer"> {/* Added cursor-pointer */}
+                      <h3
+                        className="text-xl font-bold text-gray-800 mb-2 transition-colors duration-300 cursor-pointer group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"
+                      > {/* Added gradient on hover */}
                         {project.title}
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed">
-                        {project.description} {/* Removed line-clamp-3 to show full text */}
+                        {project.description}
                       </p>
                     </div>
                   </div>

@@ -246,3 +246,33 @@
 .animate-bottom-to-top {
   animation: bottom-to-top 0.8s ease-out; /* Smooth bottom-to-top animation */
 }
+
+@keyframes slide-from-top {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-from-top {
+  animation: slide-from-top 1s ease-out;
+}
+
+@keyframes zoom-in-from-behind {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-zoom-in {
+  animation: zoom-in-from-behind 1s ease-out;
+}
