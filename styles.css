@@ -276,3 +276,12 @@
 .animate-zoom-in {
   animation: zoom-in-from-behind 1s ease-out;
 }
+
+html {
+  scroll-behavior: smooth; /* Enable smooth scrolling for the page */
+}
+
+body.modal-open {
+  overflow: hidden; /* Disable scrolling when the modal is open */
+  touch-action: none; /* Prevent touch scrolling on mobile devices */
+}

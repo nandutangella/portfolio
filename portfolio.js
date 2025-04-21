@@ -61,29 +61,39 @@ const Portfolio = () => {
 
   const touchStartX = useRef(null); // Track the starting X position of a touch
   const touchEndX = useRef(null); // Track the ending X position of a touch
+  const touchStartY = useRef(null); // Track the starting Y position of a touch
+  const touchEndY = useRef(null); // Track the ending Y position of a touch
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].clientX;
+    touchStartY.current = e.changedTouches[0].clientY;
   };
 
   const handleTouchEnd = (e) => {
     touchEndX.current = e.changedTouches[0].clientX;
+    touchEndY.current = e.changedTouches[0].clientY;
     handleSwipe();
   };
 
   const handleSwipe = () => {
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diffX = touchStartX.current - touchEndX.current;
-      if (Math.abs(diffX) > 50) { // Minimum swipe distance
+      const diffY = touchStartY.current - touchEndY.current;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffY) < 50) { // Horizontal swipe
         if (diffX > 0) {
           nextImage(); // Swipe left to go to the next image
         } else {
           prevImage(); // Swipe right to go to the previous image
         }
+      } else if (Math.abs(diffY) > 50 && diffY < 0) { // Vertical swipe down
+        closeModal(); // Close the modal on swipe down
       }
     }
     touchStartX.current = null;
     touchEndX.current = null;
+    touchStartY.current = null;
+    touchEndY.current = null;
   };
 
   const loadingMessages = [
@@ -159,13 +169,13 @@ const Portfolio = () => {
     setModalProject(project);
     setCurrentImageIndex(0);
     setModalVisible(true); // Show modal with animation
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    document.body.classList.add('modal-open'); // Disable page scrolling
   };
 
   const closeModal = () => {
     setModalVisible(false); // Trigger closing animation
     setTimeout(() => setModalProject(null), 300); // Delay to allow animation to complete
-    document.body.style.overflow = 'auto'; // Restore background scrolling
+    document.body.classList.remove('modal-open'); // Enable page scrolling
   };
 
   const nextImage = () => {
