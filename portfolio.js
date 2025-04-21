@@ -55,9 +55,11 @@ const Portfolio = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageStatuses, setImageStatuses] = useState({}); // Track image loading status
   const [pageLoaded, setPageLoaded] = useState(false); // Track if the page has loaded
+  const [modalAnimation, setModalAnimation] = useState(false); // Track modal animation state
+  const [modalVisible, setModalVisible] = useState(false); // Track modal visibility
+  const [thumbnailsLoaded, setThumbnailsLoaded] = useState(false); // Track if all thumbnails are loaded
 
   const touchStartX = useRef(null); // Track the starting X position of a touch
-  const touchEndX = useRef(null); // Track the ending X position of a touch
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].clientX;
@@ -127,6 +129,22 @@ const Portfolio = () => {
   }, []);
 
   useEffect(() => {
+    if (projects.length > 0) {
+      const allImages = projects.flatMap((project) => project.images.map((image) => image.url));
+      const imagePromises = allImages.map((url) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = resolve;
+          img.onerror = resolve; // Resolve even if an image fails to load
+        });
+      });
+
+      Promise.all(imagePromises).then(() => setThumbnailsLoaded(true)); // Set state when all images are loaded
+    }
+  }, [projects]);
+
+  useEffect(() => {
     if (modalProject) {
       const preventScroll = (e) => e.preventDefault();
       document.body.addEventListener('touchmove', preventScroll, { passive: false });
@@ -139,11 +157,13 @@ const Portfolio = () => {
   const openModal = (project) => {
     setModalProject(project);
     setCurrentImageIndex(0);
+    setModalVisible(true); // Show modal with animation
     document.body.style.overflow = 'hidden'; // Prevent background scrolling
   };
 
   const closeModal = () => {
-    setModalProject(null);
+    setModalVisible(false); // Trigger closing animation
+    setTimeout(() => setModalProject(null), 300); // Delay to allow animation to complete
     document.body.style.overflow = 'auto'; // Restore background scrolling
   };
 
@@ -167,7 +187,76 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white animate-radial-breathing-vertical font-sans flex flex-col"> {/* Updated to animate-radial-breathing-vertical */}
+    <div
+      className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white animate-radial-breathing-vertical font-sans flex flex-col"
+      style={{
+        backgroundPosition: 'center top', // Ensure gradient stays upward
+        backgroundSize: '150% 150%', // Adjust size to control its appearance
+        backgroundAttachment: 'fixed', // Prevent gradient from moving with content
+      }}
+    >
+      <style>
+        {`
+          @keyframes modal-slide-in {
+            from {
+              transform: translateY(-50px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+
+          @keyframes modal-slide-out {
+            from {
+              transform: translateY(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateY(-50px);
+              opacity: 0;
+            }
+          }
+
+          .modal-enter {
+            animation: modal-slide-in 0.3s ease-out forwards;
+          }
+
+          .modal-exit {
+            animation: modal-slide-out 0.3s ease-out forwards;
+          }
+
+          .thumbnails-hidden {
+            visibility: hidden; /* Keep thumbnails hidden until fully loaded */
+            opacity: 0;
+          }
+
+          .thumbnails-loaded {
+            visibility: visible; /* Reveal thumbnails */
+            opacity: 1;
+            animation: thumbnails-fade-in 0.8s ease-out; /* Smooth fade-in animation */
+          }
+
+          @keyframes thumbnails-fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @media (max-width: 768px) {
+            .bg-gradient-radial {
+              background-position: center top; /* Keep gradient upward on mobile */
+              backgroundSize: 200% 200%; /* Adjust size for smaller screens */
+            }
+          }
+        `}
+      </style>
       {/* Hero Section */}
       <header className="text-white py-16"> {/* Reduced padding from py-20 to py-16 */}
         <div className="container mx-auto px-4 text-center">
@@ -211,7 +300,11 @@ const Portfolio = () => {
           ) : projects.length === 0 ? (
             <p className="text-center text-gray-600">No recent work found.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ${
+                thumbnailsLoaded ? 'thumbnails-loaded' : 'thumbnails-hidden'
+              }`} // Use visibility to prevent flickering
+            >
               {projects.map((project, index) => {
                 const firstImage = project.images[0];
                 return (
@@ -226,7 +319,7 @@ const Portfolio = () => {
                         <img
                           src={firstImage.url}
                           alt={project.title}
-                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-110" // Reduced height from h-40 to h-36
                           loading="lazy"
                           onError={(e) => {
                             e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png';
@@ -235,7 +328,7 @@ const Portfolio = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-full h-48 bg-gray-300 rounded-t-lg"></div>
+                      <div className="w-full h-36 bg-gray-300 rounded-t-lg"></div> // Reduced height from h-40 to h-36
                     )}
                     <div className="p-6">
                       <h3
@@ -262,7 +355,9 @@ const Portfolio = () => {
           onClick={closeModal}
         >
           <div 
-            className="bg-white w-full h-full mx-0 relative transform transition-all duration-300 overflow-hidden" // Added overflow-hidden
+            className={`bg-white w-full h-full mx-0 relative transform transition-all duration-300 overflow-hidden ${
+              modalVisible ? 'modal-enter' : 'modal-exit'
+            }`} // Apply enter or exit animation
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart} // Add touch start handler
             onTouchEnd={handleTouchEnd} // Add touch end handler
