@@ -60,6 +60,7 @@ const Portfolio = () => {
   const [thumbnailsLoaded, setThumbnailsLoaded] = useState(false); // Track if all thumbnails are loaded
 
   const touchStartX = useRef(null); // Track the starting X position of a touch
+  const touchEndX = useRef(null); // Track the ending X position of a touch
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].clientX;
