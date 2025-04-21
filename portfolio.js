@@ -58,6 +58,8 @@ const Portfolio = () => {
   const [modalAnimation, setModalAnimation] = useState(false); // Track modal animation state
   const [modalVisible, setModalVisible] = useState(false); // Track modal visibility
   const [thumbnailsLoaded, setThumbnailsLoaded] = useState(false); // Track if all thumbnails are loaded
+  const [isSticky, setIsSticky] = useState(false); // Track sticky header state
+  const [scrollProgress, setScrollProgress] = useState(0); // Track scroll progress for animation
 
   const touchStartX = useRef(null); // Track the starting X position of a touch
   const touchEndX = useRef(null); // Track the ending X position of a touch
@@ -165,6 +167,21 @@ const Portfolio = () => {
     }
   }, [modalProject]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const maxScroll = 100; // Maximum scroll value for full animation
+      const progress = Math.min(scrollPosition / maxScroll, 1); // Normalize between 0 and 1
+      setScrollProgress(progress);
+      setIsSticky(scrollPosition > maxScroll); // Trigger sticky header after maxScroll
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const openModal = (project) => {
     setModalProject(project);
     setCurrentImageIndex(0);
@@ -206,70 +223,46 @@ const Portfolio = () => {
         backgroundAttachment: 'fixed', // Prevent gradient from moving with content
       }}
     >
-      <style>
-        {`
-          @keyframes modal-slide-in {
-            from {
-              transform: translateY(-50px);
-              opacity: 0;
-            }
-            to {
-              transform: translateY(0);
-              opacity: 1;
-            }
-          }
-
-          @keyframes modal-slide-out {
-            from {
-              transform: translateY(0);
-              opacity: 1;
-            }
-            to {
-              transform: translateY(-50px);
-              opacity: 0;
-            }
-          }
-
-          .modal-enter {
-            animation: modal-slide-in 0.3s ease-out forwards;
-          }
-
-          .modal-exit {
-            animation: modal-slide-out 0.3s ease-out forwards;
-          }
-
-          .thumbnails-hidden {
-            visibility: hidden; /* Keep thumbnails hidden until fully loaded */
-            opacity: 0;
-          }
-
-          .thumbnails-loaded {
-            visibility: visible; /* Reveal thumbnails */
-            opacity: 1;
-            animation: thumbnails-fade-in 0.8s ease-out; /* Smooth fade-in animation */
-          }
-
-          @keyframes thumbnails-fade-in {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          @media (max-width: 768px) {
-            .bg-gradient-radial {
-              background-position: center top; /* Keep gradient upward on mobile */
-              backgroundSize: 200% 200%; /* Adjust size for smaller screens */
-            }
-          }
-        `}
-      </style>
+      {/* Sticky Header */}
+      <div
+        className={`fixed top-0 left-0 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-md z-50 transition-transform duration-300 ${
+          isSticky ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1
+            className="text-xl sm:text-2xl md:text-3xl font-extralight uppercase tracking-widest text-black drop-shadow-lg"
+            style={{
+              opacity: scrollProgress, // Fade in based on scroll progress
+              transform: `translateY(${(1 - scrollProgress) * 20}px)`, // Slide up based on scroll progress
+              transition: 'opacity 0.2s, transform 0.2s',
+            }}
+          >
+            Nandu Tangella
+          </h1>
+          <p
+            className="text-sm sm:text-base md:text-lg font-extrabold uppercase tracking-wide text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+            style={{
+              opacity: scrollProgress, // Fade in based on scroll progress
+              transform: `translateY(${(1 - scrollProgress) * 20}px)`, // Slide up based on scroll progress
+              transition: 'opacity 0.2s, transform 0.2s',
+            }}
+          >
+            UI / UX Designer
+          </p>
+        </div>
+      </div>
+      {/* Add a link to the external CSS file */}
+      <link rel="stylesheet" href="./styles/portfolio.css" />
       {/* Hero Section */}
-      <header className="text-white py-16"> {/* Reduced padding from py-20 to py-16 */}
+      <header
+        className="text-white py-16"
+        style={{
+          opacity: 1 - scrollProgress, // Fade out based on scroll progress
+          transform: `translateY(${scrollProgress * -20}px)`, // Slide up based on scroll progress
+          transition: 'opacity 0.2s, transform 0.2s',
+        }}
+      >
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg animate-zoom-in">
             {/* Added animate-zoom-in */}
@@ -336,7 +329,7 @@ const Portfolio = () => {
                             e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png';
                           }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
                       </div>
                     ) : (
                       <div className="w-full h-36 bg-gray-300 rounded-t-lg"></div> // Reduced height from h-40 to h-36
@@ -368,7 +361,7 @@ const Portfolio = () => {
           <div 
             className={`bg-white w-full h-full mx-0 relative transform transition-all duration-300 overflow-hidden ${
               modalVisible ? 'modal-enter' : 'modal-exit'
-            }`} // Apply enter or exit animation
+            }`} // Apply scale animations for open and close
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart} // Add touch start handler
             onTouchEnd={handleTouchEnd} // Add touch end handler
@@ -409,7 +402,7 @@ const Portfolio = () => {
                   <img
                     src={modalProject.images[currentImageIndex].url}
                     alt={modalProject.images[currentImageIndex].name}
-                    className="max-h-full max-w-full object-contain rounded-lg shadow-lg border border-gray-300" // Ensure image fits within container
+                    className="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-gray-300" // Updated shadow to shadow-2xl for more depth
                     onError={(e) => { e.target.src = 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png'; }}
                   />
                 )
@@ -460,7 +453,13 @@ const Portfolio = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-gray-600 py-12 mt-auto"> {/* Added mt-auto */}
+      <footer 
+        className="text-gray-600 py-12 mt-auto" // Removed bg-gray-100
+        style={{
+          background: 'transparent', // Make footer background transparent
+          backdropFilter: 'blur(10px)', // Add a subtle blur effect
+        }}
+      >
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Let's Connect</h3>
