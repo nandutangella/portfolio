@@ -205,6 +205,12 @@ const Portfolio = () => {
   return (
     <div
       className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white font-sans flex flex-col"
+      style={{
+        backgroundSize: '100% 100%', // Ensure the gradient covers the entire viewport
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed', // Keep the gradient fixed during scrolling
+        backgroundRepeat: 'no-repeat', // Prevent tiling of the gradient
+      }}
     >
       {/* Cache Control for Images */}
       <meta httpEquiv="Cache-Control" content="public, max-age=86400" />
