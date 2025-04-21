@@ -377,7 +377,7 @@ const Portfolio = () => {
                 imageStatuses[modalProject.images[currentImageIndex].fullUrl]?.loading ? (
                   <div className="flex items-center justify-center w-full h-full">
                     <svg
-                      className="animate-spin h-8 w-8 text-blue-600"
+                      className="animate-spin h-8 w-8 text-purple-500" // Updated color to match the scheme
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
