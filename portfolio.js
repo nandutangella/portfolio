@@ -82,13 +82,16 @@ const Portfolio = () => {
       const diffX = touchStartX.current - touchEndX.current;
       const diffY = touchStartY.current - touchEndY.current;
 
+      // Calculate the angle of the swipe
+      const angle = Math.abs(Math.atan2(diffY, diffX) * (180 / Math.PI));
+
       if (Math.abs(diffX) > 50 && Math.abs(diffY) < 50) { // Horizontal swipe
         if (diffX > 0) {
           nextImage(); // Swipe left to go to the next image
         } else {
           prevImage(); // Swipe right to go to the previous image
         }
-      } else if (Math.abs(diffY) > 50 && diffY < 0) { // Vertical swipe down
+      } else if (Math.abs(diffY) > 50 && diffY < 0 && angle > 75 && angle < 105) { // Strict vertical swipe down
         closeModal(); // Close the modal on swipe down
       }
     }
