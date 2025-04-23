@@ -307,7 +307,12 @@ const Portfolio = () => {
         }}
       >
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-thin mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg">
+          <h1
+            className="text-4xl sm:text-5xl md:text-6xl font-thin mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg relative"
+            style={{
+              textShadow: '0 4px 10px rgba(255, 255, 255, 0.5)', // Subtle white drop shadow
+            }}
+          >
             Nandu Tangella
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
@@ -345,7 +350,7 @@ const Portfolio = () => {
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Smooth hover effect
               }}
               onClick={() => {
-                window.location.href = 'index.html'; // Navigate to root
+                window.location.href = '/'; // Navigate to the root
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.05)';
