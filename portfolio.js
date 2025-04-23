@@ -230,14 +230,14 @@ const Portfolio = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white font-sans flex flex-col"
+      className="min-h-screen bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 font-sans flex flex-col"
       style={{
         backgroundSize: 'cover', // Dynamic resizing
-        backgroundPosition: 'top center', // Positioned at the top
+        backgroundPosition: 'center', // Centered background
         backgroundRepeat: 'no-repeat',
         zIndex: -1, // Ensure it stays behind other elements
         WebkitBackgroundSize: 'cover',
-        WebkitBackgroundPosition: 'top center',
+        WebkitBackgroundPosition: 'center',
       }}
     >
       {/* Cache Control and Preload */}
