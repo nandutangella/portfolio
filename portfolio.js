@@ -37,6 +37,7 @@ const Portfolio = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -161,6 +162,10 @@ const Portfolio = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setIsPageLoaded(true);
+  }, []);
+
   const openModal = (project) => {
     setModalProject(project);
     setCurrentImageIndex(0);
@@ -227,11 +232,11 @@ const Portfolio = () => {
     <div
       className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white font-sans flex flex-col"
       style={{
-        backgroundSize: '400px 400px', // Fixed size
+        backgroundSize: 'cover', // Dynamic resizing
         backgroundPosition: 'top center', // Positioned at the top
         backgroundRepeat: 'no-repeat',
         zIndex: -1, // Ensure it stays behind other elements
-        WebkitBackgroundSize: '400px 400px',
+        WebkitBackgroundSize: 'cover',
         WebkitBackgroundPosition: 'top center',
       }}
     >
@@ -518,16 +523,18 @@ const Portfolio = () => {
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Let's Connect</h3>
             <div className="flex justify-center space-x-4">
-              <a
-                href="https://www.linkedin.com/in/nandutangella/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-700 hover:text-gray-900 transition transform hover:scale-110"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.5c0-1.378-.028-3.152-1.922-3.152-1.922 0-2.218 1.502-2.218 3.052v5.6h-3v-10h2.881v1.367h.041c.401-.759 1.379-1.559 2.841-1.559 3.037 0 3.6 2.001 3.6 4.601v5.591z" />
-                </svg>
-              </a>
+              {isPageLoaded && (
+                <a
+                  href="https://www.linkedin.com/in/nandutangella/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-700 hover:text-gray-900 transition transform hover:scale-110"
+                >
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.5c0-1.378-.028-3.152-1.922-3.152-1.922 0-2.218 1.502-2.218 3.052v5.6h-3v-10h2.881v1.367h.041c.401-.759 1.379-1.559 2.841-1.559 3.037 0 3.6 2.001 3.6 4.601v5.591z" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
           <p className="text-sm">© {new Date().getFullYear()} Nandu Tangella. All rights reserved.</p>
