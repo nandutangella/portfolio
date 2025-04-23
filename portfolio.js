@@ -239,7 +239,7 @@ const Portfolio = () => {
         zIndex: -1, // Ensure it stays behind other elements
         WebkitBackgroundSize: 'cover',
         WebkitBackgroundPosition: 'center',
-        animation: 'backgroundZoom 6s ease-in-out infinite', // Enhanced animation
+        animation: 'backgroundZoom 10s ease-in-out infinite', // Enhanced zoom-in and out animation
       }}
     >
       <style>
@@ -249,7 +249,15 @@ const Portfolio = () => {
               background-size: 100%;
             }
             50% {
-              background-size: 120%; // More noticeable zoom effect
+              background-size: 120%; // Increased zoom effect for better visibility
+            }
+          }
+          @media (max-width: 768px) {
+            .thumbnail-image {
+              height: auto; /* Allow height to adjust automatically */
+              max-height: 8rem; /* Slightly increase the maximum height */
+              width: 100%; /* Ensure the width fills the container */
+              object-fit: cover; /* Fill the container while maintaining aspect ratio */
             }
           }
         `}
@@ -284,16 +292,21 @@ const Portfolio = () => {
           >
             Nandu Tangella
           </h1>
-          <p
-            className="text-sm sm:text-base md:text-lg font-extrabold uppercase tracking-wide text-gray-800 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-            style={{
-              opacity: scrollProgress,
-              transform: `translateY(${(1 - scrollProgress) * 20}px)`,
-              transition: 'opacity 0.2s, transform 0.2s',
-            }}
-          >
-            UI / UX Designer
-          </p>
+          <nav>
+            <ul className="flex space-x-4">
+              <li>
+                <a
+                  href="#portfolio"
+                  className={`text-sm sm:text-base md:text-lg font-extrabold uppercase tracking-wide ${
+                    scrollProgress > 0.1 ? 'text-blue-500' : 'text-gray-800'
+                  }`}
+                >
+                  Portfolio
+                </a>
+              </li>
+              {/* Add other navigation links here if needed */}
+            </ul>
+          </nav>
         </div>
       </div>
       <link rel="stylesheet" href="./styles/portfolio.css" />
@@ -310,7 +323,9 @@ const Portfolio = () => {
           <h1
             className="text-4xl sm:text-5xl md:text-6xl font-thin mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg relative"
             style={{
-              textShadow: '0 4px 10px rgba(255, 255, 255, 0.5)', // Subtle white drop shadow
+              fontWeight: '200', // Made thinner for a more delicate appearance
+              textShadow: '0 8px 24px rgba(90, 120, 150, 0.9)', // Updated to match the radial gradient's darker color
+              color: 'white', // Clean white text
             }}
           >
             Nandu Tangella
@@ -334,36 +349,6 @@ const Portfolio = () => {
       {/* Portfolio Section */}
       <section id="portfolio" className="py-6 flex-grow">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-6">
-            <h2
-              className="text-2xl font-semibold sm:text-gray-800 text-white inline-block cursor-pointer"
-              style={{
-                padding: '0.5rem 1.5rem', // Slightly larger padding for better appearance
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))', // Gradient for glass effect
-                borderRadius: '1rem', // Rounded edges for chip effect
-                color: 'rgb(50, 50, 50)', // Dark gray color for text
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)', // Soft shadow for depth
-                backdropFilter: 'blur(12px)', // Stronger blur for glass effect
-                WebkitBackdropFilter: 'blur(12px)', // Safari support for blur
-                margin: '0 auto', // Center the chip horizontally
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', // Subtle text shadow for clarity
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Smooth hover effect
-              }}
-              onClick={() => {
-                window.location.href = '/'; // Navigate to the root
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.05)';
-                e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
-              }}
-            >
-              Portfolio
-            </h2>
-          </div>
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, index) => (
@@ -401,13 +386,13 @@ const Portfolio = () => {
                         <img
                           src={project.thumbnail.placeholderUrl || 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png'}
                           alt={`${project.title} placeholder`}
-                          className="w-full h-36 object-cover placeholder"
+                          className="w-full h-36 object-cover placeholder thumbnail-image"
                           loading="eager"
                         />
                         <img
                           src={project.thumbnail.thumbnailUrl}
                           alt={project.title}
-                          className="w-full h-36 object-cover transition-opacity duration-300 absolute top-0 left-0 opacity-0"
+                          className="w-full h-36 object-cover transition-opacity duration-300 absolute top-0 left-0 opacity-0 thumbnail-image"
                           loading={index < 6 ? 'eager' : 'lazy'}
                           onLoad={(e) => {
                             e.target.style.opacity = '1';
