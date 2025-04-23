@@ -227,12 +227,12 @@ const Portfolio = () => {
     <div
       className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white font-sans flex flex-col"
       style={{
-        backgroundSize: '100% 100%',
-        backgroundPosition: 'center center',
-        backgroundAttachment: 'fixed',
+        backgroundSize: '400px 400px', // Fixed size
+        backgroundPosition: 'top center', // Positioned at the top
         backgroundRepeat: 'no-repeat',
-        WebkitBackgroundSize: '100% 100%',
-        WebkitBackgroundPosition: 'center center',
+        zIndex: -1, // Ensure it stays behind other elements
+        WebkitBackgroundSize: '400px 400px',
+        WebkitBackgroundPosition: 'top center',
       }}
     >
       {/* Cache Control and Preload */}
@@ -277,7 +277,7 @@ const Portfolio = () => {
           </p>
         </div>
       </div>
-      <link rel="stylesheet" href="./styles/styles.css" />
+      <link rel="stylesheet" href="./styles/portfolio.css" />
       {/* Hero Section */}
       <header
         className="text-white py-16"
