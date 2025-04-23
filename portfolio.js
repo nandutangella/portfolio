@@ -230,16 +230,30 @@ const Portfolio = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-pink-100 via-blue-100 to-purple-100 font-sans flex flex-col"
+      className="min-h-screen font-sans flex flex-col"
       style={{
+        background: 'radial-gradient(circle, rgba(230, 240, 250, 0.8) 40%, rgba(120, 150, 180, 0.7) 70%, rgba(90, 120, 150, 0.9) 100%)', // Softer powder dark ocean blue-gray gradient
         backgroundSize: 'cover', // Dynamic resizing
         backgroundPosition: 'center', // Centered background
         backgroundRepeat: 'no-repeat',
         zIndex: -1, // Ensure it stays behind other elements
         WebkitBackgroundSize: 'cover',
         WebkitBackgroundPosition: 'center',
+        animation: 'backgroundZoom 6s ease-in-out infinite', // Enhanced animation
       }}
     >
+      <style>
+        {`
+          @keyframes backgroundZoom {
+            0%, 100% {
+              background-size: 100%;
+            }
+            50% {
+              background-size: 120%; // More noticeable zoom effect
+            }
+          }
+        `}
+      </style>
       {/* Cache Control and Preload */}
       <meta httpEquiv="Cache-Control" content="public, max-age=86400" />
       {projects.slice(0, 6).map((project, index) => (
@@ -261,7 +275,7 @@ const Portfolio = () => {
       >
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1
-            className="text-xl sm:text-2xl md:text-3xl font-extralight uppercase tracking-widest text-black drop-shadow-lg"
+            className="text-xl sm:text-2xl md:text-3xl font-thin uppercase tracking-widest text-black drop-shadow-lg"
             style={{
               opacity: scrollProgress,
               transform: `translateY(${(1 - scrollProgress) * 20}px)`,
@@ -293,7 +307,7 @@ const Portfolio = () => {
         }}
       >
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extralight mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-thin mb-6 uppercase tracking-widest text-gray-800 drop-shadow-lg">
             Nandu Tangella
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
@@ -315,9 +329,36 @@ const Portfolio = () => {
       {/* Portfolio Section */}
       <section id="portfolio" className="py-6 flex-grow">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-6 text-gray-100">
-            Portfolio
-          </h2>
+          <div className="text-center mb-6">
+            <h2
+              className="text-2xl font-semibold sm:text-gray-800 text-white inline-block cursor-pointer"
+              style={{
+                padding: '0.5rem 1.5rem', // Slightly larger padding for better appearance
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))', // Gradient for glass effect
+                borderRadius: '1rem', // Rounded edges for chip effect
+                color: 'rgb(50, 50, 50)', // Dark gray color for text
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)', // Soft shadow for depth
+                backdropFilter: 'blur(12px)', // Stronger blur for glass effect
+                WebkitBackdropFilter: 'blur(12px)', // Safari support for blur
+                margin: '0 auto', // Center the chip horizontally
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', // Subtle text shadow for clarity
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Smooth hover effect
+              }}
+              onClick={() => {
+                window.location.href = 'index.html'; // Navigate to root
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.05)';
+                e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2)';
+              }}
+            >
+              Portfolio
+            </h2>
+          </div>
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, index) => (

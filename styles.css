@@ -101,9 +101,11 @@
 
 @keyframes radial-zoom {
   0% {
+    background: radial-gradient(circle, rgba(230, 240, 250, 0.8) 40%, rgba(120, 150, 180, 0.7) 70%, rgba(90, 120, 150, 0.9) 100%);
     background-size: 100% 100%;
   }
   100% {
+    background: radial-gradient(circle, rgba(230, 240, 250, 0.8) 40%, rgba(120, 150, 180, 0.7) 70%, rgba(90, 120, 150, 0.9) 100%);
     background-size: 200% 200%;
   }
 }
