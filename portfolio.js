@@ -32,11 +32,11 @@ const Portfolio = () => {
   const [error, setError] = useState(null);
   const [modalProject, setModalProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [imageStatuses, setImageStatuses] = useState({}); // Track image loading status
-  const [pageLoaded, setPageLoaded] = useState(false); // Track if the page has loaded
-  const [modalVisible, setModalVisible] = useState(false); // Track modal visibility
-  const [isSticky, setIsSticky] = useState(false); // Track sticky header state
-  const [scrollProgress, setScrollProgress] = useState(0); // Track scroll progress for animation
+  const [imageStatuses, setImageStatuses] = useState({});
+  const [pageLoaded, setPageLoaded] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
@@ -58,18 +58,16 @@ const Portfolio = () => {
     if (touchStartX.current !== null && touchEndX.current !== null) {
       const diffX = touchStartX.current - touchEndX.current;
       const diffY = touchStartY.current - touchEndY.current;
-
-      // Calculate the angle of the swipe
       const angle = Math.abs(Math.atan2(diffY, diffX) * (180 / Math.PI));
 
-      if (Math.abs(diffX) > 50 && Math.abs(diffY) < 50) { // Horizontal swipe
+      if (Math.abs(diffX) > 50 && Math.abs(diffY) < 50) {
         if (diffX > 0) {
-          nextImage(); // Swipe left to go to the next image
+          nextImage();
         } else {
-          prevImage(); // Swipe right to go to the previous image
+          prevImage();
         }
-      } else if (Math.abs(diffY) > 50 && diffY < 0 && angle > 75 && angle < 105) { // Strict vertical swipe down
-        closeModal(); // Close the modal on swipe down
+      } else if (Math.abs(diffY) > 50 && diffY < 0 && angle > 75 && angle < 105) {
+        closeModal();
       }
     }
     touchStartX.current = null;
@@ -89,7 +87,7 @@ const Portfolio = () => {
     "Loading... What's your next big idea?",
   ];
 
-  const loadingEmojis = ["🐱", "🐶", "🐼", "🦄", "🐸", "🐧", "🐢", "🐙"]; // Add a list of emojis
+  const loadingEmojis = ["🐱", "🐶", "🐼", "🦄", "🐸", "🐧", "🐢", "🐙"];
 
   const getRandomLoadingMessage = () => {
     return loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
@@ -120,10 +118,33 @@ const Portfolio = () => {
     };
 
     fetchProjects();
-
-    // Trigger the animation after the component mounts
     setTimeout(() => setPageLoaded(true), 100);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(
+          (registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          },
+          (err) => {
+            console.error('Service Worker registration failed:', err);
+          }
+        );
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    if (modalProject) {
+      const preventScroll = (e) => e.preventDefault();
+      document.body.addEventListener('touchmove', preventScroll, { passive: false });
+      loadFullImage(currentImageIndex);
+      return () => {
+        document.body.removeEventListener('touchmove', preventScroll);
+      };
+    }
+  }, [modalProject, currentImageIndex]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -206,16 +227,26 @@ const Portfolio = () => {
     <div
       className="min-h-screen bg-gradient-radial from-gray-200 via-gray-400 to-white font-sans flex flex-col"
       style={{
-        backgroundSize: '100% 100%', // Ensure the gradient covers the entire viewport
-        backgroundPosition: 'center center', // Explicitly set the position to center
-        backgroundAttachment: 'fixed', // Keep the gradient fixed during scrolling
-        backgroundRepeat: 'no-repeat', // Prevent tiling of the gradient
-        WebkitBackgroundSize: '100% 100%', // Add WebKit-specific property for iOS
-        WebkitBackgroundPosition: 'center center', // Add WebKit-specific property for iOS
+        backgroundSize: '100% 100%',
+        backgroundPosition: 'center center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat',
+        WebkitBackgroundSize: '100% 100%',
+        WebkitBackgroundPosition: 'center center',
       }}
     >
-      {/* Cache Control for Images */}
+      {/* Cache Control and Preload */}
       <meta httpEquiv="Cache-Control" content="public, max-age=86400" />
+      {projects.slice(0, 6).map((project, index) => (
+        project.thumbnail && (
+          <link
+            key={index}
+            rel="preload"
+            href={project.thumbnail.thumbnailUrl}
+            as="image"
+          />
+        )
+      ))}
 
       {/* Sticky Header */}
       <div
@@ -246,7 +277,7 @@ const Portfolio = () => {
           </p>
         </div>
       </div>
-      <link rel="stylesheet" href="./styles/portfolio.css" />
+      <link rel="stylesheet" href="./styles/styles.css" />
       {/* Hero Section */}
       <header
         className="text-white py-16"
@@ -283,11 +314,21 @@ const Portfolio = () => {
             Portfolio
           </h2>
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="flex flex-col items-center">
-                <div className="text-6xl animate-bounce mb-4">{getRandomLoadingEmoji()}</div> {/* Random emoji */}
-                <p className="text-gray-600 text-lg">{getRandomLoadingMessage()}</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <div
+                  key={index}
+                  className="relative bg-white bg-opacity-80 backdrop-blur-md shadow-lg rounded-lg overflow-hidden"
+                  style={{ borderRadius: '1rem' }}
+                >
+                  <div className="w-full h-36 skeleton"></div>
+                  <div className="p-6">
+                    <div className="h-6 w-3/4 mb-2 skeleton"></div>
+                    <div className="h-4 w-full skeleton"></div>
+                    <div className="h-4 w-5/6 skeleton"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <p className="text-center text-red-600">{error}</p>
@@ -307,11 +348,18 @@ const Portfolio = () => {
                     {project.thumbnail ? (
                       <div className="relative overflow-hidden">
                         <img
+                          src={project.thumbnail.placeholderUrl || 'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png'}
+                          alt={`${project.title} placeholder`}
+                          className="w-full h-36 object-cover placeholder"
+                          loading="eager"
+                        />
+                        <img
                           src={project.thumbnail.thumbnailUrl}
                           alt={project.title}
-                          className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                          onLoad={() => {
+                          className="w-full h-36 object-cover transition-opacity duration-300 absolute top-0 left-0 opacity-0"
+                          loading={index < 6 ? 'eager' : 'lazy'}
+                          onLoad={(e) => {
+                            e.target.style.opacity = '1';
                             console.log(`Thumbnail ${project.thumbnail.thumbnailUrl} loaded in ${(performance.now() - renderTime).toFixed(2)}ms`);
                           }}
                           onError={(e) => {
@@ -355,7 +403,6 @@ const Portfolio = () => {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Fixed Header */}
             <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center gap-4 z-50">
               <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-grow">
                 {modalProject.title}
@@ -373,13 +420,12 @@ const Portfolio = () => {
               </button>
             </div>
 
-            {/* Scrollable Image Container */}
             <div className="absolute top-16 bottom-16 left-0 right-0 overflow-y-auto flex items-center justify-center pt-16 group">
               {modalProject.images[currentImageIndex] ? (
                 imageStatuses[modalProject.images[currentImageIndex].fullUrl]?.loading ? (
                   <div className="flex items-center justify-center w-full h-full">
                     <svg
-                      className="animate-spin h-8 w-8 text-purple-500" // Updated color to match the scheme
+                      className="animate-spin h-8 w-8 text-purple-500"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -420,7 +466,6 @@ const Portfolio = () => {
               )}
             </div>
 
-            {/* Fixed Bottom Navigation */}
             {modalProject.images.length > 1 && (
               <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center gap-4 z-50">
                 <button

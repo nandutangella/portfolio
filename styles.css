@@ -366,6 +366,29 @@
   }
 }
 
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* LQIP Placeholder */
+.placeholder {
+  filter: blur(10px);
+}
+
+
 html {
   scroll-behavior: smooth; /* Enable smooth scrolling for the page */
 }
@@ -374,3 +397,4 @@ body.modal-open {
   overflow: hidden; /* Disable scrolling when the modal is open */
   touch-action: none; /* Prevent touch scrolling on mobile devices */
 }
+
