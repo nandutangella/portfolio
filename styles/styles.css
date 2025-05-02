@@ -1,0 +1,73 @@
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* LQIP Placeholder */
+.placeholder {
+  filter: blur(10px);
+}
+
+/* Modal Animation */
+.modal-enter {
+  animation: modal-scale-in 0.3s ease-out forwards;
+}
+
+.modal-exit {
+  animation: modal-scale-out 0.3s ease-out forwards;
+}
+
+@keyframes modal-scale-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes modal-scale-out {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0; }
+}
+
+/* Thumbnail Animation */
+.thumbnail-hover {
+  overflow: hidden;
+  position: relative;
+}
+
+.thumbnail-hover img {
+  transition: transform 0.5s ease-in-out;
+  transform: scale(1);
+}
+
+.thumbnail-hover:hover img {
+  transform: scale(1.1);
+}
+
+/* Background Animations */
+@keyframes backgroundZoom {
+  0%, 100% { background-size: 100%; }
+  50% { background-size: 120%; }
+}
+
+@media (max-width: 768px) {
+  .bg-gradient-radial {
+    background-position: center top;
+    background-size: 200% 200%;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+}

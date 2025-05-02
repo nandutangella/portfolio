@@ -2,10 +2,14 @@ const CACHE_NAME = 'portfolio-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/styles/styles.css', // Updated reference
+  '/styles/styles.css',
   '/portfolio.js',
-  'https://unpkg.com/axios@1.6.8/dist/axios.min.js',
-  'https://raw.githubusercontent.com/nandutangella/portfolio/main/fallback-400x200.png'
+  '/favicon.svg',
+  '/fallback-400x200.png',
+  'https://unpkg.com/react@17/umd/react.production.min.js',
+  'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js',
+  'https://cdn.jsdelivr.net/npm/axios@1.6.2/dist/axios.min.js',
+  'https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.6/babel.min.js'
 ];
 
 self.addEventListener('install', (event) => {
