@@ -238,7 +238,7 @@ const Portfolio = () => {
         `}
       </style>
       <meta httpEquiv="Cache-Control" content="public, max-age=86400" />
-      {projects.slice(0, 6).map((project, index) => (
+      {Array.isArray(projects) && projects.slice(0, 6).map((project, index) => (
         project.thumbnail && (
           <link
             key={index}
@@ -456,7 +456,7 @@ const Portfolio = () => {
                   </div>
                 ) : imageStatuses[modalProject.images[currentImageIndex].fullUrl]?.error ? (
                   <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                    <p className "text-red-600 text-center">
+                    <p className="text-red-600 text-center">
                       Failed to load image: {modalProject.images[currentImageIndex].name}. Please try again.
                     </p>
                   </div>
