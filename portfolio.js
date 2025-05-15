@@ -211,7 +211,8 @@ const Portfolio = () => {
     <div
       className="min-h-screen font-sans flex flex-col"
       style={{
-        background: 'radial-gradient(circle, rgba(230, 240, 250, 0.8) 40%, rgba(120, 150, 180, 0.7) 70%, rgba(90, 120, 150, 0.9) 100%)',
+        background: 'radial-gradient(circle, rgba(0, 0, 0, 0.99) 40%, rgba(0, 0, 0, 0.95) 70%, rgba(0, 0, 0, 0.9) 100%), radial-gradient(circle, rgba(230, 240, 250, 0.7) 40%, rgba(120, 150, 180, 0.6) 70%, rgba(90, 120, 150, 0.8) 100%)',
+        backgroundBlendMode: 'overlay',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -524,7 +525,7 @@ const Portfolio = () => {
 
       {/* Footer */}
       <footer
-        className="text-gray-600 py-12 mt-auto"
+        className="text-white py-12 mt-auto"
         style={{
           background: 'transparent',
           backdropFilter: 'blur(10px)',
@@ -532,13 +533,13 @@ const Portfolio = () => {
       >
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Let's Connect</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Let's Connect</h3>
             <div className="flex justify-center space-x-4">
               <a
                 href="https://www.linkedin.com/in/nandutangella/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-700 hover:text-gray-900 transition transform hover:scale-110"
+                className="text-white hover:text-gray-300 transition transform hover:scale-110"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.5c0-1.378-.028-3.152-1.922-3.152-1.922 0-2.218 1.502-2.218 3.052v5.6h-3v-10h2.881v1.367h.041c.401-.759 1.379-1.559 2.841-1.559 3.037 0 3.6 2.001 3.6 4.601v5.591z" />
@@ -546,7 +547,7 @@ const Portfolio = () => {
               </a>
             </div>
           </div>
-          <p className="text-sm">© {new Date().getFullYear()} Nandu Tangella. All rights reserved.</p>
+          <p className="text-sm text-white">© {new Date().getFullYear()} Nandu Tangella. All rights reserved.</p>
         </div>
       </footer>
     </div>
