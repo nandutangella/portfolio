@@ -392,7 +392,7 @@ const Portfolio = () => {
                       <p className="text-gray-600 text-sm leading-relaxed mb-2">
                         {project.description}
                       </p>
-                      <div className="text-gray-600 text-sm">
+                      <div className="text-gray-400 text-sm">
                         <span className="font-semibold">Tools Used: </span>
                         {project.toolsUsed ? project.toolsUsed : 'Not specified'}
                       </div>
