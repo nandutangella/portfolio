@@ -308,7 +308,7 @@ const { useState, useEffect, useRef } = React;
                    aria-hidden="true"
                  ></span>
                  <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                   UI/UX Designer
+                   Product Designer
                  </span>
                </span>
              </p>
