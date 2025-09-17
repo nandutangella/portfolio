@@ -1,0 +1,102 @@
+s/*GENERAL*/
+.clearer{clear:both;}
+#spacer {padding-bottom:28px;}
+.hide{ display:none;}
+
+/*HTML*/
+body {margin:0px;padding:0px;font-family:Verdana, Geneva, sans-serif; line-height:21px;font-size:12px;color:#7b7b7b;}
+#sidebar h2 {font-size:14px;margin:10px 0 20px 0;padding:0px;font-family: Verdana, Geneva, sans-serif; color:#555;font-weight:normal;}
+h3 {margin:13px 0 0 0;font-size:12px;font-family: Verdana, Geneva, sans-serif;color:#2b2a2a;letter-spacing:0px;font-weight:normal;}
+h4 {font-size:17px;font-family:Georgia, "Times New Roman", Times, serif; color:#fff;letter-spacing:0px;font-weight:bold; text-shadow: 1px 1px 1px #FFF;}
+h5 {margin:-20px -3px 0 -30px;font-size:10px; text-align:right; line-height:normal; font-family:Verdana, Geneva, sans-serif; color:#999;font-weight:normal; text-shadow: 1px 1px 1px #FFF;}
+p {padding: 0 0 10px 0;}
+.link {float: left; width: 100%;}
+.link img {float: left; margin:5px 5px 0 0;}
+.link a {color: #06F;}
+.navlink { margin-left: auto; margin-right: auto;}
+.navlink img {display: block; margin-left: auto; margin-right: auto; margin-bottom:-3px; border:none;}
+.book {float: left; width: 100%;}
+.book img {float: left; margin:5px 5px 0 0;}
+li { list-style:none;}
+a {color:#666; outline:none;text-decoration:none;}
+a:hover { color:#000000;outline:none;}
+a:active{outline: none;}
+fieldset {border:none;}
+.black {color:#000;}
+.detailImg {margin-bottom:20px;}
+
+/*TOPBAR*/
+#topbar {height:80px;background:url('../images/bg_header.png'); background-repeat:repeat-x scroll 0 0;margin:0 auto;padding:0px;width:100%;position:fixed;z-index:9999; border-bottom:solid #CCC 0px;}	
+.logo {margin:-10px 0 0 75px;float:left;}
+
+/*NAVIGATION*/
+#navigation {margin:3px 0 0 7px; float:left;}
+#navigation li {margin:0;padding:0;float:left;margin:0px 40px 0 0; text-shadow: 1px 1px 1px #FFF;}
+#navigation ul a {font-size:10px;letter-spacing:1px;line-height:24px;text-decoration:none;color:#666;}
+#navigation ul a:hover {color:#999;}
+#current{color:#303030 !important; font-weight:bold;}
+
+#hireme {margin: 8px 10px 0 0; float:right;}
+
+#sidebar {float:left;width:200px;margin:110px 0 0 0;padding:0 0 0 20px;position:fixed;text-align:right;}
+#footer {width:100%;margin:30px 0 0 0;border-top:1px #cbc8c5 solid;padding-top:10px;}
+#footer p {float:left;}
+
+#slogan {text-align:right;width:255px;margin: 0 0 50px 30px;}
+#content {width:600px;float:left;margin:28px 0 0px 250px;padding-left:18px;}
+#content p, #contentInside p {font-size: 12px;line-height:21px;margin:0 0 0px 0;}
+#contentInside {width:600px;float:left;margin:110px 0 0px 250px;padding-left:18px;}
+
+/*Socials*/
+#socials ul {float:right;margin:0 0 30px 0;padding:0;}
+#socials li {float:left;display:block;margin:0 0 0 7px;}
+#socials li.twitter a {width:24px;height:24px;display:block;background:url('../images/socials/twitter.jpg') no-repeat bottom left;}
+#socials li.facebook a {width:24px;height:24px;display:block;background:url('../images/socials/facebook.jpg') no-repeat bottom left;}
+#socials li.flickr a {width:24px;height:24px;display:block;background:url('../images/socials/flickr.jpg') no-repeat bottom left;}
+#socials li.email a {width:24px;height:24px;display:block;background:url('../images/socials/email.jpg') no-repeat bottom left;}
+#socials li.linkedin a {width:24px;height:24px;display:block;background:url('../images/socials/linkedin.jpg') no-repeat bottom left;}
+#socials ul a:hover {background-position:top left;}
+
+/*Featured projects*/
+#projects {margin:0 0 80px 0px;float:right;width:256px;}
+#projects li {margin:0;padding:0;}
+#projects ul a {font-size:11px;line-height:24px;text-decoration:none;}
+#projects ul a.on{color:#000000;}
+#projects a {color:#969696; outline:none;}
+#projects a:hover { color:#000000;outline:none;}
+.title {font-family:Verdana, Geneva, sans-serif; font-size:38px;color:#000000; float:left;}		
+.iGroup img{padding:0 0 0 0;}
+.iGroup a{display:block;}
+.screen {margin-top:90px;}
+
+/* Filterable lists */
+.filter li {float:right;clear:right;margin:0 0 5px 0;}
+.filter a {color:#777;text-decoration:none;}
+.filter a:hover, .current a {color:#000;}
+
+/* Portfolio Items */
+.portfolio .work-item {margin-bottom: 20px;}
+.portfolio {overflow: hidden;padding:0;}
+.portfolio li {float:left;margin:0 20px 20px 0;border:1px solid #ccc;width:178px;height:178px;}
+.portfolio a {display:block;border:3px solid #fff;text-decoration:none;}
+.portfolio img {display:block;border:1px solid #ccc;}
+.work {float:left;margin: 0 20px 0 0;position:relative;}
+.work span {color:#000;font-size:11px;left:1px;padding:8px 10px 8px 10px;border-bottom: 1px solid #d3d0d0;position:absolute;text-transform:uppercase;top:1px;z-index:9000;}
+.work .hover {background: none repeat scroll 0 0 #FCFCFC;height:100%;left:0;opacity:0;overflow:auto;position:absolute;top:0;width:100%;}
+.hover-tax {color:#666666;font-size:12px;margin:30px 10px 0;}
+a.details {background:url('../images/more.png') no-repeat;border-left-width:0px;bottom:0;height:20px;position:absolute;right:0;width:20px;}
+a.zoom {background:url('../images/zoom.png') no-repeat;bottom:0;height:64px;position:absolute;right:0px;text-indent:-9999px;width:64px;}
+.work .hover p {color: #666666;font-size:12px;line-height:20px!important;margin:50px 10px 10px 10px!important;}
+.work .hover:hover {opacity: 1;}
+
+/* Contact Form*/
+#form {width:570px;margin: 20px 0 40px 0;}
+.notification_error{border: 1px solid #f1dfc5;height:auto;color:#ca5702;width:457px;padding:10px 10px 10px 60px;background:url(../images/icons/erro.png) no-repeat center left #fdf0dc;text-align:left;-moz-border-radius:5px;margin-bottom:10px;}
+.notification_ok{border: 1px #cbcf8e solid;height:auto;width:90%;padding: 10px;background: #f5f9fd;text-align: center;-moz-border-radius: 5px;margin-bottom:10px;}
+label  {width: 100px;margin:5px;float:left;text-align:left;}
+textarea{height:120px;width:400px;margin:5px;padding:5px;float:left;border:1px solid #cccccc;color:#333333;font:11px Verdana, Geneva, sans-serif; -moz-border-radius: 3px;}
+.button {margin:5px 0 0 300px;}
+.textbox {width:400px;height:15px;margin:5px;padding:5px;float:left;border:1px solid #cccccc;color:#333333;font:11px Verdana, Geneva, sans-serif; -moz-border-radius: 3px;}
+
+
+
