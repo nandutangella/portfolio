@@ -7,7 +7,7 @@
  * 2. Deploy your site - the function will be available at /api/chat
  */
 
-export async function onRequestPost({ request, env }) {
+export async function onRequest({ request, env }) {
 	// Get origin from request for CORS
 	const origin = request.headers.get('Origin');
 	
@@ -18,6 +18,25 @@ export async function onRequestPost({ request, env }) {
 		'Access-Control-Allow-Headers': 'Content-Type, Accept',
 		'Access-Control-Max-Age': '86400',
 	};
+
+	// Handle OPTIONS preflight
+	if (request.method === 'OPTIONS') {
+		return new Response(null, {
+			status: 204,
+			headers: corsHeaders,
+		});
+	}
+
+	// Only allow POST requests
+	if (request.method !== 'POST') {
+		return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+			status: 405,
+			headers: {
+				'Content-Type': 'application/json',
+				...corsHeaders,
+			},
+		});
+	}
 
 	// Get API key from Cloudflare Pages environment variable
 	const API_KEY = env.COHERE_API_KEY;
@@ -94,19 +113,4 @@ export async function onRequestPost({ request, env }) {
 			},
 		});
 	}
-}
-
-// Handle OPTIONS preflight
-export async function onRequestOptions({ request }) {
-	const origin = request.headers.get('Origin');
-	
-	return new Response(null, {
-		status: 204,
-		headers: {
-			'Access-Control-Allow-Origin': origin || '*',
-			'Access-Control-Allow-Methods': 'POST, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type, Accept',
-			'Access-Control-Max-Age': '86400',
-		},
-	});
 }
