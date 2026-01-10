@@ -1,0 +1,16 @@
+# Cloudflare Worker Configuration
+# This file is used by Wrangler CLI for local development
+
+name = "cohere-proxy"
+main = "cloudflare-worker.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables (set via Cloudflare Dashboard or wrangler secret put)
+# Run: wrangler secret put COHERE_API_KEY
+# [vars]
+# COHERE_API_KEY = "your-key-here"
+
+# Routes (optional - if you want to use a custom domain)
+# routes = [
+#   { pattern = "api.cohere.*", zone_name = "nandutangella.com" }
+# ]

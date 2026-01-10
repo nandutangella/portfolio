@@ -229,7 +229,25 @@
 	<!-- Scripts -->
 	<script src="../js/script.js"></script>
 	<script src="../js/chat-config.js"></script>
-	<script src="../js/chat-config.local.js"></script>
+	<script>
+		// Load local config synchronously only on localhost (avoids 404 in production)
+		(function() {
+			if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+				try {
+					const xhr = new XMLHttpRequest();
+					xhr.open('GET', '../js/chat-config.local.js', false); // Synchronous
+					xhr.send();
+					if (xhr.status === 200) {
+						const script = document.createElement('script');
+						script.textContent = xhr.responseText;
+						document.head.appendChild(script);
+					}
+				} catch (e) {
+					// File doesn't exist - that's okay for production
+				}
+			}
+		})();
+	</script>
 	<script src="../js/chat.js"></script>
 </body>
 </html>

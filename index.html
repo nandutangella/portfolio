@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Nandu Tangella — Product Designer</title>
 	<meta name="description" content="Product Designer specializing in human-computer interaction, user experience design, and creating useful, usable, and desirable products.">
@@ -445,7 +445,25 @@
 	<!-- Scripts -->
 	<script src="js/script.js"></script>
 	<script src="js/chat-config.js"></script>
-	<script src="js/chat-config.local.js"></script>
+	<script>
+		// Load local config synchronously only on localhost (avoids 404 in production)
+		(function() {
+			if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+				try {
+					const xhr = new XMLHttpRequest();
+					xhr.open('GET', 'js/chat-config.local.js', false); // Synchronous
+					xhr.send();
+					if (xhr.status === 200) {
+						const script = document.createElement('script');
+						script.textContent = xhr.responseText;
+						document.head.appendChild(script);
+					}
+				} catch (e) {
+					// File doesn't exist - that's okay for production
+				}
+			}
+		})();
+	</script>
 	<script src="js/chat.js"></script>
 </body>
 </html>

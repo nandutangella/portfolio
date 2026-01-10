@@ -1813,6 +1813,8 @@ body.chat-open .nav {
 	padding: 0 1rem;
 	z-index: 10000;
 	display: block;
+	box-sizing: border-box;
+	padding-bottom: env(safe-area-inset-bottom);
 }
 
 .chat-widget.active .chat-input-container {
@@ -1838,6 +1840,8 @@ body.chat-open .nav {
 	right: 0;
 	z-index: 9999;
 	width: 100%;
+	max-width: 100vw;
+	box-sizing: border-box;
 }
 
 /* Max width for desktop and larger devices */
@@ -1846,9 +1850,11 @@ body.chat-open .nav {
 		left: 50%;
 		transform: translateX(-50%);
 		max-width: 600px;
+		width: 100%;
 		border-radius: 24px;
 		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
 		animation: slideUpDesktop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-sizing: border-box;
 	}
 	
 	[data-theme="dark"] .chat-container {
@@ -2254,25 +2260,47 @@ body.chat-open .nav {
 		bottom: 1rem;
 		max-width: calc(100% - 2rem);
 		padding: 0;
+		left: 1rem;
+		right: 1rem;
+		transform: none;
+		width: auto;
 	}
 	
 	.chat-container {
 		height: 100vh;
+		height: 100dvh; /* Dynamic viewport height for mobile browsers */
 		max-height: 100vh;
+		max-height: 100dvh;
 		border-radius: 0;
 		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		max-width: 100vw;
+		transform: none;
+		padding-bottom: env(safe-area-inset-bottom);
+		box-sizing: border-box;
+		overflow: hidden;
 	}
 	
 	.chat-header {
 		padding: 1.25rem 1.5rem;
+		padding-top: calc(1.25rem + env(safe-area-inset-top));
+		flex-shrink: 0;
 	}
 	
 	.chat-messages {
 		padding: 1.5rem;
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 	
 	.chat-input-container-inner {
 		padding: 1rem 1.5rem;
+		padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+		flex-shrink: 0;
 	}
 }
 
@@ -2280,23 +2308,45 @@ body.chat-open .nav {
 	.chat-input-container {
 		bottom: 0.75rem;
 		max-width: calc(100% - 1.5rem);
+		left: 0.75rem;
+		right: 0.75rem;
+		transform: none;
+		width: auto;
 	}
 	
 	.chat-container {
 		height: 100vh;
+		height: 100dvh; /* Dynamic viewport height for mobile browsers */
 		max-height: 100vh;
+		max-height: 100dvh;
+		left: 0;
+		right: 0;
+		width: 100%;
+		max-width: 100vw;
+		transform: none;
+		padding-bottom: env(safe-area-inset-bottom);
+		box-sizing: border-box;
+		overflow: hidden;
 	}
 	
 	.chat-header {
 		padding: 1rem 1.25rem;
+		padding-top: calc(1rem + env(safe-area-inset-top));
+		flex-shrink: 0;
 	}
 	
 	.chat-messages {
 		padding: 1.25rem;
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 	
 	.chat-input-container-inner {
 		padding: 0.875rem 1.25rem;
+		padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));
+		flex-shrink: 0;
 	}
 	
 	.chat-message-content {

@@ -382,18 +382,41 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 			message: msg.content
 		}));
 
+		// Check if we should use a proxy (for production) or direct API (for local dev)
+		// Use proxy if: on production domain OR no API key available
+		// Use direct API if: on localhost AND API key is available
+		const isLocalhost = window.location.hostname === 'localhost' || 
+		                   window.location.hostname === '127.0.0.1' ||
+		                   window.location.hostname === '';
+		const useProxy = !isLocalhost || !API_KEY;
+		
+		// Cloudflare Worker URL - Update this with your actual worker URL
+		// Format: https://cohere-proxy.your-username.workers.dev
+		// Or if using custom domain: https://api.yourdomain.com
+		const CLOUDFLARE_WORKER_URL = 'cohere-proxy.wispy-king-9050.workers.dev';
+		
+		const apiEndpoint = useProxy 
+			? CLOUDFLARE_WORKER_URL  // Cloudflare Worker proxy (production)
+			: 'https://api.cohere.ai/v1/chat';     // Direct API call (local dev only)
+
 		// Try available models in order (fallback if one doesn't work)
 		const modelsToTry = ['command-r-08-2024', 'command-r-plus-08-2024', 'command-a-03-2025'];
 		
 		for (const model of modelsToTry) {
 			try {
-				const response = await fetch('https://api.cohere.ai/v1/chat', {
+				const requestHeaders = {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json'
+				};
+				
+				// Only add Authorization header if using direct API (not proxy)
+				if (!useProxy && API_KEY) {
+					requestHeaders['Authorization'] = `Bearer ${API_KEY}`;
+				}
+
+				const response = await fetch(apiEndpoint, {
 					method: 'POST',
-					headers: {
-						'Authorization': `Bearer ${API_KEY}`,
-						'Content-Type': 'application/json',
-						'Accept': 'application/json'
-					},
+					headers: requestHeaders,
 					body: JSON.stringify({
 						message: userMessage,
 						chat_history: messages,

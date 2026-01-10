@@ -2,6 +2,10 @@
 js/chat-config.local.js
 *.local.js
 
+# Cloudflare
+.wrangler/
+wrangler.toml.local
+
 # OS Files
 .DS_Store
 Thumbs.db
