@@ -11,13 +11,6 @@
 	const COHERE_API_KEY = window.COHERE_API_KEY || '';
 	const OPENAI_API_KEY = window.OPENAI_API_KEY || '';
 	
-	// Debug: Log API key detection
-	console.log('API Key Detection:', {
-		huggingface: HUGGINGFACE_API_KEY ? 'Set' : 'Not set',
-		cohere: COHERE_API_KEY ? 'Set (' + COHERE_API_KEY.substring(0, 10) + '...)' : 'Not set',
-		openai: OPENAI_API_KEY ? 'Set' : 'Not set'
-	});
-	
 	// Auto-detect which API to use (prioritize free options)
 	let API_PROVIDER = 'fallback';
 	let API_KEY = '';
@@ -35,8 +28,20 @@
 	
 	const USE_AI = API_PROVIDER !== 'fallback';
 	
-	// Debug: Log selected provider
-	console.log('Selected API Provider:', API_PROVIDER, USE_AI ? '(AI Enabled)' : '(Using Fallback)');
+	// Debug mode: only log in development
+	const isDevelopment = window.location.hostname === 'localhost' || 
+	                      window.location.hostname === '127.0.0.1' ||
+	                      window.location.hostname === '';
+	
+	// Debug: Log API key detection (development only)
+	if (isDevelopment) {
+		console.log('API Key Detection:', {
+			huggingface: HUGGINGFACE_API_KEY ? 'Set' : 'Not set',
+			cohere: COHERE_API_KEY ? 'Set (' + COHERE_API_KEY.substring(0, 10) + '...)' : 'Not set',
+			openai: OPENAI_API_KEY ? 'Set' : 'Not set'
+		});
+		console.log('Selected API Provider:', API_PROVIDER, USE_AI ? '(AI Enabled)' : '(Using Fallback)');
+	}
 
 	// DOM Elements
 	const chatWidget = document.getElementById('chatWidget');
@@ -191,12 +196,18 @@
 			let response;
 			if (USE_AI) {
 				// Use generative AI
-				console.log('Calling AI API:', API_PROVIDER);
+				if (isDevelopment) {
+					console.log('Calling AI API:', API_PROVIDER);
+				}
 				response = await generateAIResponse(message);
-				console.log('AI Response received:', response.substring(0, 50) + '...');
+				if (isDevelopment) {
+					console.log('AI Response received:', response.substring(0, 50) + '...');
+				}
 			} else {
 				// Use fallback knowledge base
-				console.log('Using fallback responses (no API key detected)');
+				if (isDevelopment) {
+					console.log('Using fallback responses (no API key detected)');
+				}
 				await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 				response = generateResponse(message);
 			}
@@ -208,7 +219,9 @@
 			console.error('Error details:', error.message);
 			hideTypingIndicator();
 			// Fallback to knowledge base on error
-			console.log('Falling back to keyword-based responses');
+			if (isDevelopment) {
+				console.log('Falling back to keyword-based responses');
+			}
 			const fallbackResponse = generateResponse(message);
 			addMessage(fallbackResponse, 'bot');
 		}
@@ -298,7 +311,9 @@ Key facts about you:
 Always respond in first person (I, me, my). Be conversational, helpful, and authentic. Keep responses concise (2-3 sentences typically).`;
 
 		try {
-			console.log(`Using ${API_PROVIDER} API provider`);
+			if (isDevelopment) {
+				console.log(`Using ${API_PROVIDER} API provider`);
+			}
 			let response;
 			
 			switch (API_PROVIDER) {
@@ -431,11 +446,15 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 					const errorData = await response.json().catch(() => ({}));
 					// If model not found, try next model
 					if (errorData.message && errorData.message.includes('removed') && modelsToTry.indexOf(model) < modelsToTry.length - 1) {
-						console.warn(`Model ${model} not available, trying next...`);
+						if (isDevelopment) {
+							console.warn(`Model ${model} not available, trying next...`);
+						}
 						continue;
 					}
 					const errorMessage = errorData.message || `HTTP ${response.status}`;
-					console.error('Cohere API error response:', errorData);
+					if (isDevelopment) {
+						console.error('Cohere API error response:', errorData);
+					}
 					throw new Error(`Cohere API error: ${errorMessage}`);
 				}
 
@@ -443,10 +462,14 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 				
 				// Cohere returns response in 'text' field
 				if (data.text) {
-					console.log(`Successfully used model: ${model}`);
+					if (isDevelopment) {
+						console.log(`Successfully used model: ${model}`);
+					}
 					return data.text.trim();
 				} else {
-					console.warn('Unexpected Cohere response format:', data);
+					if (isDevelopment) {
+						console.warn('Unexpected Cohere response format:', data);
+					}
 					throw new Error('Unexpected response format from Cohere API');
 				}
 			} catch (error) {

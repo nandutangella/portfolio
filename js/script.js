@@ -376,19 +376,6 @@
 		});
 	}
 
-	// Performance: Preload critical images
-	const criticalImages = [
-		'images/hci/int_design_product_sketch.png',
-		'images/hci/user_center_design.png'
-	];
-
-	criticalImages.forEach(src => {
-		const link = document.createElement('link');
-		link.rel = 'preload';
-		link.as = 'image';
-		link.href = src;
-		document.head.appendChild(link);
-	});
 
 	// Add loading state management
 	window.addEventListener('load', () => {
