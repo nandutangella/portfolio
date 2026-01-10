@@ -18,35 +18,49 @@ function getCorsHeaders(request) {
 	};
 }
 
-// Handle OPTIONS preflight
-export async function onRequestOptions({ request }) {
-	return new Response(null, {
-		status: 204,
-		headers: getCorsHeaders(request),
-	});
-}
-
-// Handle GET requests (for testing)
-export async function onRequestGet({ request, env }) {
+// Main request handler - handles all methods
+export async function onRequest({ request, env }) {
 	const corsHeaders = getCorsHeaders(request);
-	return new Response(JSON.stringify({ 
-		status: 'Function is running!',
-		method: 'GET',
-		url: request.url,
-		hasApiKey: !!env.COHERE_API_KEY,
-		timestamp: new Date().toISOString()
-	}), {
-		status: 200,
-		headers: {
-			'Content-Type': 'application/json',
-			...corsHeaders,
-		},
-	});
-}
 
-// Handle POST requests
-export async function onRequestPost({ request, env }) {
-	const corsHeaders = getCorsHeaders(request);
+	// Handle OPTIONS preflight
+	if (request.method === 'OPTIONS') {
+		return new Response(null, {
+			status: 204,
+			headers: corsHeaders,
+		});
+	}
+
+	// Handle GET requests (for testing)
+	if (request.method === 'GET') {
+		return new Response(JSON.stringify({ 
+			status: 'Function is running!',
+			method: 'GET',
+			url: request.url,
+			hasApiKey: !!env.COHERE_API_KEY,
+			timestamp: new Date().toISOString()
+		}), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				...corsHeaders,
+			},
+		});
+	}
+
+	// Only allow POST requests for API calls
+	if (request.method !== 'POST') {
+		return new Response(JSON.stringify({ 
+			error: 'Method not allowed',
+			method: request.method,
+			allowedMethods: ['GET', 'POST', 'OPTIONS']
+		}), {
+			status: 405,
+			headers: {
+				'Content-Type': 'application/json',
+				...corsHeaders,
+			},
+		});
+	}
 
 	// Get API key from Cloudflare Pages environment variable
 	const API_KEY = env.COHERE_API_KEY;
