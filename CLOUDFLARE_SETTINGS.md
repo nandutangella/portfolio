@@ -30,7 +30,7 @@
    
    These complement your `_headers` file.
 
-3. **CORS**: Managed Transforms don't affect CORS headers - those are handled by your Cloudflare Worker.
+3. **CORS**: Managed Transforms don't affect CORS headers - those are handled by your Cloudflare Pages Function.
 
 ## How to Configure
 

@@ -1,95 +1,87 @@
-# Deployment Guide - Chat API Key Setup with Cloudflare
+# Deployment Guide - AI Chat Setup with Cloudflare Pages Functions
 
-## Cloudflare Workers Setup (Recommended for Cloudflare-hosted domains)
+## Cloudflare Pages Functions Setup
 
-### Step 1: Create Cloudflare Worker
+This uses Cloudflare Pages Functions, which run on the same domain as your site, eliminating CORS issues.
+
+### Step 1: Add Environment Variable
 
 1. **Go to Cloudflare Dashboard:**
    - Navigate to: https://dash.cloudflare.com
-   - Go to **Workers & Pages** → **Create** → **Create Worker**
+   - Go to **Workers & Pages** → Your site (`nandutangella.com`)
 
-2. **Add the Worker Code:**
-   - Copy the code from `cloudflare-worker.js`
-   - Paste it into the Cloudflare Worker editor
-   - Name it: `cohere-proxy` (or any name you prefer)
-
-3. **Add Environment Variable:**
-   - In the Worker editor, go to **Settings** → **Variables**
-   - Under **Environment Variables**, click **Add variable**
+2. **Add Environment Variable:**
+   - Go to **Settings** → **Environment Variables**
+   - Click **Add variable**
    - Name: `COHERE_API_KEY`
    - Value: Your Cohere API key
+   - Environment: **Production** (and optionally **Preview** for testing)
    - Click **Save**
 
-4. **Deploy the Worker:**
-   - Click **Deploy**
-   - Note your Worker URL (e.g., `https://cohere-proxy.your-username.workers.dev`)
+### Step 2: Deploy Your Site
 
-### Step 2: Update Your Code
+The Pages Function is already set up in `functions/api/chat.js`. When you deploy:
 
-1. **Update `js/chat.js`:**
-   - Find the line: `const CLOUDFLARE_WORKER_URL = 'https://cohere-proxy.your-username.workers.dev';`
-   - Replace with your actual Worker URL from Step 1
+1. Push your code to your repository
+2. Cloudflare Pages will automatically:
+   - Detect the `functions/` folder
+   - Deploy the function at `/api/chat`
+   - Make it available at `https://nandutangella.com/api/chat`
 
-2. **Commit and Push:**
-   ```bash
-   git add js/chat.js
-   git commit -m "Update Cloudflare Worker URL"
-   git push
-   ```
+### Step 3: Verify It's Working
 
-### Step 3: (Optional) Use Custom Domain
-
-If you want to use a subdomain like `api.nandutangella.com`:
-
-1. **In Cloudflare Worker:**
-   - Go to **Settings** → **Triggers**
-   - Under **Routes**, click **Add route**
-   - Route: `api.nandutangella.com/*`
-   - Zone: `nandutangella.com`
-   - Click **Save**
-
-2. **Update `js/chat.js`:**
-   - Change `CLOUDFLARE_WORKER_URL` to: `https://api.nandutangella.com`
+1. Open your site in production
+2. Open the browser console
+3. Try the chat - it should work without CORS errors
+4. The function will be called at `/api/chat` (same domain, no CORS)
 
 ---
 
 ## Local Development
 
 - **Localhost:** Uses `chat-config.local.js` with direct API calls (if API key is set)
-- **Production:** Uses Cloudflare Worker proxy (secure, no keys in client code)
-
----
-
-## Alternative: Direct API (Less Secure)
-
-If you prefer to use the API directly in production (not recommended):
-
-1. Remove the proxy logic from `chat.js`
-2. Add API key via environment variables in your build process
-3. **Warning:** This exposes the key in client-side code
+- **Production:** Uses Cloudflare Pages Function at `/api/chat` (secure, no keys in client code)
 
 ---
 
 ## Troubleshooting
 
-### Worker returns 500 error:
-- Check that `COHERE_API_KEY` is set in Cloudflare Worker environment variables
+### Function returns 500 error:
+- Check that `COHERE_API_KEY` is set in Cloudflare Pages environment variables
 - Verify the key is correct in Cohere dashboard
+- Check Cloudflare Pages logs: **Workers & Pages** → Your site → **Logs**
 
 ### CORS errors:
-- Cloudflare Worker already handles CORS
-- If issues persist, check Worker logs in Cloudflare dashboard
+- Pages Functions run on the same domain, so CORS shouldn't be an issue
+- If you see CORS errors, check that the function is deployed correctly
 
-### Worker URL not working:
-- Verify the Worker is deployed and active
-- Check the URL format matches exactly
-- Test the Worker URL directly in browser/Postman
+### Function not found (404):
+- Verify the `functions/api/chat.js` file exists
+- Check that your site is deployed (not just preview)
+- Ensure the function file is in the correct location: `functions/api/chat.js`
 
 ---
 
 ## Security Notes
 
-✅ **Secure:** API key stored in Cloudflare (server-side)  
-✅ **Free:** Cloudflare Workers free tier includes 100,000 requests/day  
+✅ **Secure:** API key stored in Cloudflare Pages (server-side)  
+✅ **Free:** Cloudflare Pages Functions free tier includes 100,000 requests/day  
 ✅ **Fast:** Runs on Cloudflare's edge network (global CDN)  
-✅ **No keys in git:** API key never committed to repository
+✅ **No keys in git:** API key never committed to repository  
+✅ **No CORS issues:** Function runs on same domain as your site
+
+---
+
+## File Structure
+
+```
+Portfolio/
+├── functions/
+│   └── api/
+│       └── chat.js          # Pages Function (handles API calls)
+├── js/
+│   └── chat.js              # Client-side chat widget
+└── index.html               # Main page
+```
+
+The function at `functions/api/chat.js` will be available at `https://nandutangella.com/api/chat`.

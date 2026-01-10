@@ -31,11 +31,11 @@
 	                      window.location.hostname === '127.0.0.1' ||
 	                      window.location.hostname === '';
 	
-	// In production, always use AI via Cloudflare Worker (API key is in Worker)
+	// In production, always use AI via Cloudflare Pages Function (API key is in Pages env vars)
 	// In development, use AI if API key is available, otherwise use fallback
 	const USE_AI = isDevelopment 
 		? (API_PROVIDER !== 'fallback')  // Local dev: only if API key is set
-		: true;  // Production: always use AI via proxy (API key in Cloudflare Worker)
+		: true;  // Production: always use AI via Pages Function (API key in Cloudflare Pages)
 	
 	// In production, force Cohere provider (via proxy)
 	const PRODUCTION_API_PROVIDER = isDevelopment ? API_PROVIDER : 'cohere';
@@ -569,23 +569,21 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 			message: msg.content
 		}));
 
-		// Check if we should use a proxy (for production) or direct API (for local dev)
-		// Use proxy if: on production domain OR no API key available
+		// Check if we should use Pages Function (for production) or direct API (for local dev)
+		// Use Pages Function if: on production domain OR no API key available
 		// Use direct API if: on localhost AND API key is available
 		const isLocalhost = window.location.hostname === 'localhost' || 
 		                   window.location.hostname === '127.0.0.1' ||
 		                   window.location.hostname === '';
-		// In production, always use proxy (API key is in Cloudflare Worker)
-		// In development, use proxy if no API key, otherwise use direct API
+		// In production, always use Pages Function (API key is in Cloudflare Pages env vars)
+		// In development, use Pages Function if no API key, otherwise use direct API
 		const useProxy = !isLocalhost || !API_KEY;
 		
-		// Cloudflare Worker URL - Update this with your actual worker URL
-		// Format: https://cohere-proxy.your-username.workers.dev
-		// Or if using custom domain: https://api.yourdomain.com
-		const CLOUDFLARE_WORKER_URL = 'https://cohere-proxy.wispy-king-9050.workers.dev';
+		// API endpoint - Use Cloudflare Pages Function in production, direct API in dev
+		const PAGES_FUNCTION_URL = '/api/chat';
 		
 		const apiEndpoint = useProxy 
-			? CLOUDFLARE_WORKER_URL  // Cloudflare Worker proxy (production)
+			? PAGES_FUNCTION_URL  // Cloudflare Pages Function (production) - same domain, no CORS
 			: 'https://api.cohere.ai/v1/chat';     // Direct API call (local dev only)
 
 		// Try available models in order (fallback if one doesn't work)
