@@ -407,8 +407,22 @@
 		const isHomePage = currentPath === '/index.html' || currentPath.endsWith('/index.html');
 		const isBooksPage = currentPath.includes('/books/');
 		const isProductsPage = currentPath.includes('/products/');
+		const isContactPage = currentPath.includes('/contact/');
 		
 		// Handle specific pages first
+		if (isContactPage) {
+			navLinks.forEach(link => {
+				const href = link.getAttribute('href');
+				if (!href) return;
+				// Match Contact link - must be #contact or contain /contact/
+				if (href === '#contact' || href.includes('/contact/')) {
+					link.classList.add('active');
+					return; // Only mark one as active
+				}
+			});
+			return;
+		}
+		
 		if (isBooksPage) {
 			navLinks.forEach(link => {
 				const href = link.getAttribute('href');

@@ -5,10 +5,20 @@ compatibility_date = "2025-01-10"
 [env.production]
 routes = [
   { pattern = "nandutangella.com/api/chat", zone_name = "nandutangella.com" },
+  { pattern = "nandutangella.com/api/contact", zone_name = "nandutangella.com" },
   { pattern = "nandutangella.com/api/*", zone_name = "nandutangella.com" }
 ]
 
 # Environment variables can be set in two ways:
 # 1. Via GitHub Actions (recommended) - uses GitHub Secrets
 # 2. Via Cloudflare Dashboard: Workers & Pages → Your Worker → Settings → Variables
-#    Add: COHERE_API_KEY = "your-key-here"
+#
+# Required variables:
+#   - COHERE_API_KEY: For chat functionality
+#   - TURNSTILE_SECRET_KEY: For contact form bot protection (get from Cloudflare Turnstile)
+#   - RESEND_API_KEY: For sending contact form emails (get from Resend.com)
+#
+# Optional variables:
+#   - CONTACT_EMAIL: Email to receive contact form submissions (defaults to me@nandutangella.com)
+#
+# See CONTACT_FORM_SETUP.md for detailed setup instructions.

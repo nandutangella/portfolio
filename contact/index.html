@@ -2,33 +2,33 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Design Books & Reading List — Nandu Tangella | Product Designer</title>
-	<meta name="description" content="Design books that have influenced my approach to product design and development: The Lean Startup, Understanding Virtual Reality, Sketching User Experiences, Collaboration, Rework, and Don't Make Me Think.">
-	<meta name="keywords" content="design books, product design books, UX books, design reading list, The Lean Startup, Don't Make Me Think, product designer reading list">
+	<title>Contact — Nandu Tangella | Product Designer</title>
+	<meta name="description" content="Get in touch with Nandu Tangella. Available for new opportunities in product design, UX design, and AI design.">
+	<meta name="keywords" content="contact, product designer, UX designer, hire designer, design opportunities, Nandu Tangella contact">
 	<meta name="author" content="Nandu Tangella">
 	<meta name="robots" content="index, follow">
-	<link rel="canonical" href="https://nandutangella.com/books/">
+	<link rel="canonical" href="https://nandutangella.com/contact/">
 	
 	<!-- Favicon -->
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="manifest" href="/site.webmanifest">
 	
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website">
-	<meta property="og:url" content="https://nandutangella.com/books/">
-	<meta property="og:title" content="Design Books & Reading List — Nandu Tangella">
-	<meta property="og:description" content="Design books that have influenced my approach to product design and development.">
-	<meta property="og:image" content="https://nandutangella.com/images/books/TheLeanStartup.jpg">
+	<meta property="og:url" content="https://nandutangella.com/contact/">
+	<meta property="og:title" content="Contact — Nandu Tangella | Product Designer">
+	<meta property="og:description" content="Get in touch with Nandu Tangella. Available for new opportunities in product design, UX design, and AI design.">
 	
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary">
-	<meta name="twitter:url" content="https://nandutangella.com/books/">
-	<meta name="twitter:title" content="Design Books & Reading List — Nandu Tangella">
-	<meta name="twitter:description" content="Design books that have influenced my approach to product design and development.">
+	<meta name="twitter:url" content="https://nandutangella.com/contact/">
+	<meta name="twitter:title" content="Contact — Nandu Tangella">
+	<meta name="twitter:description" content="Get in touch with Nandu Tangella. Available for new opportunities in product design, UX design, and AI design.">
 	
 	<!-- Preconnect for performance -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +39,9 @@
 	
 	<!-- Styles -->
 	<link rel="stylesheet" href="../css/style.css">
+	
+	<!-- Cloudflare Turnstile -->
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 	
 	<!-- Google Tag Manager -->
 	<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NQGTH3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -54,8 +57,8 @@
 			<div class="nav-links">
 				<a href="../index.html" class="nav-link">Portfolio</a>
 				<a href="../products/index.html" class="nav-link">Products</a>
-				<a href="#books" class="nav-link">Books</a>
-				<a href="../contact/index.html" class="nav-link">Contact</a>
+				<a href="../books/index.html" class="nav-link">Books</a>
+				<a href="#contact" class="nav-link">Contact</a>
 			</div>
 			<div class="nav-actions">
 				<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -88,126 +91,106 @@
 		<div class="hero-content">
 			<div class="hero-text">
 				<h1 class="hero-title">
-					<span class="hero-line">Reading List</span>
+					<span class="hero-line">Get in Touch</span>
 				</h1>
 				<p class="hero-description">
-					Books that have influenced my approach to design and product development.
+					Have a project in mind or want to collaborate? I'd love to hear from you.
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<!-- Books Section -->
-	<section class="work" id="books">
+	<!-- Contact Form Section -->
+	<section class="contact-section" id="contact">
 		<div class="container">
 			<div class="section-header">
-				<span class="section-label">Books</span>
-				<h2 class="section-title">Past Readings</h2>
+				<span class="section-label">Contact</span>
+				<h2 class="section-title">Send a Message</h2>
 			</div>
 
-			<div class="books-grid">
-				<article class="book-item">
-					<a href="https://www.amazon.com/Amp-Unlocking-Hypergrowth-Expectations-Intensity/dp/1119836115" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/amp-it-up.jpg" alt="Amp It Up" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Amp It Up</h3>
-							<p class="book-subtitle">Leading for Hypergrowth by Raising Expectations, Increasing Urgency, and Elevating Intensity</p>
-							<p class="book-author">Frank Slootman</p>
-						</div>
-					</a>
-				</article>
+			<div class="contact-form-wrapper">
+				<form class="contact-form" id="contactForm" novalidate>
+					<div class="form-group">
+						<label for="name" class="form-label">Name</label>
+						<input 
+							type="text" 
+							id="name" 
+							name="name" 
+							class="form-input" 
+							required 
+							autocomplete="name"
+							aria-required="true"
+							aria-describedby="name-error"
+						>
+						<span class="form-error" id="name-error" role="alert"></span>
+					</div>
 
-				<article class="book-item">
-					<a href="https://www.harpercollins.com/products/crossing-the-chasm-3rd-edition-geoffrey-a-moore?variant=32130444066850" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/crossing-the-chasm.jpg" alt="Crossing the Chasm" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Crossing the Chasm</h3>
-							<p class="book-subtitle">Marketing and Selling Disruptive Products to Mainstream Customers</p>
-							<p class="book-author">Geoffrey A. Moore</p>
-						</div>
-					</a>
-				</article>
+					<div class="form-group">
+						<label for="email" class="form-label">Email</label>
+						<input 
+							type="email" 
+							id="email" 
+							name="email" 
+							class="form-input" 
+							required 
+							autocomplete="email"
+							aria-required="true"
+							aria-describedby="email-error"
+						>
+						<span class="form-error" id="email-error" role="alert"></span>
+					</div>
 
-				<article class="book-item">
-					<a href="http://theleanstartup.com/book" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/TheLeanStartup.jpg" alt="The Lean Startup" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">The Lean Startup</h3>
-							<p class="book-subtitle">How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses</p>
-							<p class="book-author">Eric Ries</p>
-						</div>
-					</a>
-				</article>
+					<div class="form-group">
+						<label for="subject" class="form-label">Subject</label>
+						<input 
+							type="text" 
+							id="subject" 
+							name="subject" 
+							class="form-input" 
+							required
+							aria-required="true"
+							aria-describedby="subject-error"
+						>
+						<span class="form-error" id="subject-error" role="alert"></span>
+					</div>
 
-				<article class="book-item">
-					<a href="http://goo.gl/Q9BZW" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/UnderstandingVirtualReality.jpg" alt="Understanding Virtual Reality" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Understanding Virtual Reality</h3>
-							<p class="book-subtitle">Interface, Application, and Design</p>
-							<p class="book-author">Morgan Kaufmann</p>
-						</div>
-					</a>
-				</article>
+					<div class="form-group">
+						<label for="message" class="form-label">Message</label>
+						<textarea 
+							id="message" 
+							name="message" 
+							class="form-textarea" 
+							rows="6" 
+							required
+							aria-required="true"
+							aria-describedby="message-error"
+						></textarea>
+						<span class="form-error" id="message-error" role="alert"></span>
+					</div>
 
-				<article class="book-item">
-					<a href="http://goo.gl/wHJnZ" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/SketchingUserExperiences.jpg" alt="Sketching User Experiences" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Sketching User Experiences</h3>
-							<p class="book-subtitle">Getting the Design Right and the Right Design</p>
-							<p class="book-author">William Buxton</p>
-						</div>
-					</a>
-				</article>
+					<!-- Cloudflare Turnstile -->
+					<!-- TODO: Replace with your Turnstile Site Key from Cloudflare Dashboard -->
+					<div class="form-group">
+						<label class="form-label">Security Verification</label>
+						<div id="turnstile-widget"></div>
+						<small style="display: block; margin-top: 0.5rem; color: var(--color-text-light); font-size: 0.75rem;">
+							Protected by Cloudflare Turnstile
+						</small>
+					</div>
 
-				<article class="book-item">
-					<a href="http://goo.gl/iqevG" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/Collaboration.jpg" alt="Collaboration 2.0" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Collaboration 2.0</h3>
-							<p class="book-author">David Coleman</p>
-						</div>
-					</a>
-				</article>
+					<div class="form-group">
+						<button type="submit" class="form-submit" id="submitButton" aria-label="Send message">
+							<span class="submit-text">Send Message</span>
+							<span class="submit-loader" aria-hidden="true">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+								</svg>
+							</span>
+						</button>
+					</div>
 
-				<article class="book-item">
-					<a href="http://goo.gl/GwMRZ" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/Rework.jpg" alt="Rework" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Rework</h3>
-							<p class="book-author">Jason Fried</p>
-						</div>
-					</a>
-				</article>
-
-				<article class="book-item">
-					<a href="https://www.amazon.com/Dont-Make-Think-Revisited-Usability/dp/0321965515" target="_blank" rel="noopener" class="book-link">
-						<div class="book-image">
-							<img src="../images/books/DontMakeMeThink.jpg" alt="Don't Make Me Think" loading="lazy">
-						</div>
-						<div class="book-content">
-							<h3 class="book-title">Don't Make Me Think, Revisited</h3>
-							<p class="book-subtitle">A Common Sense Approach to Web Usability</p>
-							<p class="book-author">Steve Krug</p>
-						</div>
-					</a>
-				</article>
-
+					<div class="form-message" id="formMessage" role="alert" aria-live="polite"></div>
+				</form>
 			</div>
 		</div>
 	</section>
@@ -238,6 +221,8 @@
 					placeholder="Ask Nandu..." 
 					autocomplete="off"
 					aria-label="Chat input"
+					inputmode="text"
+					enterkeyhint="send"
 				>
 				<button type="submit" class="chat-send" aria-label="Send message">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -280,6 +265,8 @@
 						placeholder="Ask Nandu..." 
 						autocomplete="off"
 						aria-label="Chat input"
+						inputmode="text"
+						enterkeyhint="send"
 					>
 					<button type="submit" class="chat-send" aria-label="Send message">
 						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -315,5 +302,6 @@
 		})();
 	</script>
 	<script src="../js/chat.js"></script>
+	<script src="../js/contact-form.js"></script>
 </body>
 </html>

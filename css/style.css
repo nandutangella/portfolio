@@ -2434,6 +2434,198 @@ body.chat-open .nav {
 	}
 }
 
+/* Contact Form Styles */
+.contact-section {
+	padding: var(--spacing-3xl) 0;
+	min-height: 60vh;
+}
+
+.contact-form-wrapper {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-label {
+	font-family: var(--font-display);
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--color-text);
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
+}
+
+.form-input,
+.form-textarea {
+	width: 100%;
+	padding: 0.875rem 1rem;
+	font-family: var(--font-primary);
+	font-size: 1rem;
+	line-height: 1.5;
+	color: var(--color-text);
+	background-color: var(--color-bg);
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
+	transition: all var(--transition-base);
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+	outline: none;
+	border-color: var(--color-accent);
+	box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .form-input:focus,
+[data-theme="dark"] .form-textarea:focus {
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.form-input-error {
+	border-color: #ef4444;
+}
+
+.form-input-error:focus {
+	border-color: #ef4444;
+	box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-textarea {
+	resize: vertical;
+	min-height: 120px;
+	font-family: var(--font-primary);
+}
+
+.form-error {
+	display: none;
+	font-size: 0.875rem;
+	color: #ef4444;
+	font-weight: 500;
+	margin-top: 0.25rem;
+}
+
+.form-error[style*="display: block"] {
+	display: block;
+}
+
+.form-submit {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.875rem 2rem;
+	font-family: var(--font-display);
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--color-white);
+	background-color: var(--color-accent);
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all var(--transition-base);
+	position: relative;
+	min-height: 48px;
+}
+
+.form-submit:hover:not(:disabled) {
+	background-color: var(--color-gray-900);
+	transform: translateY(-1px);
+	box-shadow: var(--shadow-md);
+}
+
+.form-submit:active:not(:disabled) {
+	transform: translateY(0);
+}
+
+.form-submit:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.submit-loader {
+	display: none;
+	animation: spin 1s linear infinite;
+}
+
+.submit-loader[style*="display: inline-block"] {
+	display: inline-block;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.form-message {
+	display: none;
+	padding: 1rem;
+	border-radius: 4px;
+	font-size: 0.875rem;
+	font-weight: 500;
+	text-align: center;
+	margin-top: var(--spacing-sm);
+}
+
+.form-message[style*="display: block"] {
+	display: block;
+}
+
+.form-message-success {
+	background-color: #10b981;
+	color: white;
+}
+
+.form-message-error {
+	background-color: #ef4444;
+	color: white;
+}
+
+/* Turnstile Widget Styling */
+#turnstile-widget {
+	margin: var(--spacing-sm) 0;
+	min-height: 65px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+#turnstile-widget iframe {
+	border: none;
+}
+
+/* Ensure Turnstile widget is visible */
+.cf-turnstile {
+	margin: var(--spacing-sm) 0;
+}
+
+/* Responsive Contact Form */
+@media (max-width: 768px) {
+	.contact-form-wrapper {
+		max-width: 100%;
+	}
+	
+	.form-submit {
+		width: 100%;
+	}
+}
+
 /* Print Styles */
 @media print {
 	.nav,
