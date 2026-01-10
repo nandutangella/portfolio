@@ -1878,7 +1878,7 @@ body.chat-open .nav {
 
 [data-theme="dark"] .chat-container {
 	background: var(--color-bg-secondary);
-	border-color: var(--color-gray-700);
+	border-color: var(--color-gray-300);
 	box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4), 0 -8px 16px rgba(0, 0, 0, 0.3);
 }
 
