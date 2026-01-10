@@ -13,15 +13,19 @@
 
 export default {
 	async fetch(request, env) {
-		// CORS headers for all responses
+		// Get origin from request for CORS
+		const origin = request.headers.get('Origin');
+		
+		// CORS headers for all responses - use specific origin if provided, otherwise *
 		const corsHeaders = {
-			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Origin': origin || '*',
 			'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
 			'Access-Control-Allow-Headers': 'Content-Type, Accept, Authorization',
+			'Access-Control-Allow-Credentials': 'false',
 			'Access-Control-Max-Age': '86400',
 		};
 
-		// Handle CORS preflight
+		// Handle CORS preflight - must return early
 		if (request.method === 'OPTIONS') {
 			return new Response(null, {
 				status: 204,
@@ -54,7 +58,19 @@ export default {
 		}
 
 		try {
-			const requestBody = await request.json();
+			// Parse request body
+			let requestBody;
+			try {
+				requestBody = await request.json();
+			} catch (parseError) {
+				return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
+					status: 400,
+					headers: {
+						'Content-Type': 'application/json',
+						...corsHeaders,
+					},
+				});
+			}
 
 			// Forward request to Cohere API
 			const response = await fetch('https://api.cohere.ai/v1/chat', {
@@ -67,7 +83,22 @@ export default {
 				body: JSON.stringify(requestBody),
 			});
 
-			const data = await response.json();
+			// Parse response
+			let data;
+			try {
+				data = await response.json();
+			} catch (jsonError) {
+				return new Response(JSON.stringify({ 
+					error: 'Invalid response from Cohere API',
+					status: response.status 
+				}), {
+					status: 502,
+					headers: {
+						'Content-Type': 'application/json',
+						...corsHeaders,
+					},
+				});
+			}
 
 			return new Response(JSON.stringify(data), {
 				status: response.status,
@@ -77,7 +108,10 @@ export default {
 				},
 			});
 		} catch (error) {
-			return new Response(JSON.stringify({ error: error.message }), {
+			return new Response(JSON.stringify({ 
+				error: error.message || 'Internal server error',
+				type: error.name || 'Error'
+			}), {
 				status: 500,
 				headers: {
 					'Content-Type': 'application/json',
