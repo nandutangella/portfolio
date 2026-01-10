@@ -6,6 +6,74 @@
 (function() {
 	'use strict';
 
+	// URL Cleaning - Remove /index.html from URLs
+	function cleanUrl(url) {
+		if (!url) return url;
+		// Remove /index.html from the end of paths
+		return url.replace(/\/index\.html(\/|$|#)/g, '/$1').replace(/\/index\.html$/, '/');
+	}
+
+	function getCleanPath(pathname) {
+		if (!pathname) return '/';
+		// Remove /index.html from path
+		let cleanPath = pathname.replace(/\/index\.html$/, '/');
+		// Ensure root is just /
+		if (cleanPath === '' || cleanPath === '/index.html') {
+			cleanPath = '/';
+		}
+		// Ensure trailing slash for directory paths (except root)
+		if (cleanPath !== '/' && !cleanPath.endsWith('/') && !cleanPath.includes('.')) {
+			cleanPath += '/';
+		}
+		return cleanPath;
+	}
+
+	// Clean URL on page load if it contains /index.html
+	function cleanCurrentUrl() {
+		const currentPath = window.location.pathname;
+		if (currentPath.includes('/index.html')) {
+			const cleanPath = getCleanPath(currentPath);
+			const hash = window.location.hash;
+			const search = window.location.search;
+			const newUrl = cleanPath + (search ? search : '') + (hash ? hash : '');
+			
+			// Use replaceState to avoid adding to history, but only if path actually changed
+			if (newUrl !== window.location.pathname + search + hash) {
+				window.history.replaceState(null, '', newUrl);
+			}
+		}
+	}
+
+	// Intercept link clicks to ensure clean URLs
+	function interceptLinkClicks() {
+		document.addEventListener('click', function(e) {
+			const link = e.target.closest('a');
+			if (!link || !link.href) return;
+			
+			const href = link.getAttribute('href');
+			// Skip if it's an anchor link, external link, or already clean
+			if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || 
+			    href.startsWith('http://') || href.startsWith('https://')) {
+				return;
+			}
+			
+			// Clean the href if it contains index.html
+			if (href.includes('index.html')) {
+				const cleanHref = cleanUrl(href);
+				if (cleanHref !== href) {
+					e.preventDefault();
+					const url = new URL(link.href, window.location.origin);
+					url.pathname = getCleanPath(url.pathname);
+					window.location.href = url.toString();
+				}
+			}
+		}, true);
+	}
+
+	// Initialize URL cleaning
+	cleanCurrentUrl();
+	interceptLinkClicks();
+
 	// DOM Elements
 	const nav = document.getElementById('nav');
 	const navContainer = document.querySelector('.nav-container');
@@ -395,16 +463,18 @@
 		let currentPath = window.location.pathname;
 		const currentHash = window.location.hash;
 		
-		// Normalize path
-		if (currentPath.endsWith('/')) {
-			currentPath = currentPath.slice(0, -1);
-		}
+		// Normalize path - remove /index.html if present
+		currentPath = currentPath.replace(/\/index\.html$/, '/');
 		if (currentPath === '' || currentPath === '/') {
-			currentPath = '/index.html';
+			currentPath = '/';
+		}
+		// Ensure trailing slash for directory paths (except root)
+		if (currentPath !== '/' && !currentPath.endsWith('/') && !currentPath.includes('.')) {
+			currentPath += '/';
 		}
 		
 		// Determine which page we're on
-		const isHomePage = currentPath === '/index.html' || currentPath.endsWith('/index.html');
+		const isHomePage = currentPath === '/' || currentPath === '/index.html';
 		const isBooksPage = currentPath.includes('/books/');
 		const isProductsPage = currentPath.includes('/products/');
 		const isContactPage = currentPath.includes('/contact/');
