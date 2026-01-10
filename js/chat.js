@@ -616,6 +616,18 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 
 				if (!response.ok) {
 					const errorData = await response.json().catch(() => ({}));
+					
+					// Log full error details for debugging
+					if (isDevelopment || response.status === 405) {
+						console.error('API Error Response:', {
+							status: response.status,
+							statusText: response.statusText,
+							errorData: errorData,
+							endpoint: apiEndpoint,
+							method: 'POST'
+						});
+					}
+					
 					// If model not found, try next model
 					if (errorData.message && errorData.message.includes('removed') && modelsToTry.indexOf(model) < modelsToTry.length - 1) {
 						if (isDevelopment) {
@@ -623,7 +635,13 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 						}
 						continue;
 					}
-					const errorMessage = errorData.message || `HTTP ${response.status}`;
+					
+					// For 405 errors, show the method that was received
+					if (response.status === 405 && errorData.method) {
+						throw new Error(`Cohere API error: HTTP 405 - Function received ${errorData.method} instead of POST. URL: ${errorData.url || apiEndpoint}`);
+					}
+					
+					const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}`;
 					if (isDevelopment) {
 						console.error('Cohere API error response:', errorData);
 					}
