@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'worker.js'
-      - 'wrangler.toml'
-      - '.github/workflows/deploy-worker.yml'
   workflow_dispatch:
 
 jobs:
@@ -33,6 +29,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: '.'
-          command: deploy worker.js --env production
+          command: deploy --env production
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
