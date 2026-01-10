@@ -2598,21 +2598,26 @@ body.chat-open .nav {
 }
 
 /* Turnstile Widget Styling */
-#turnstile-widget {
-	margin: var(--spacing-sm) 0;
-	min-height: 65px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-}
-
-#turnstile-widget iframe {
-	border: none;
-}
-
-/* Ensure Turnstile widget is visible */
 .cf-turnstile {
 	margin: var(--spacing-sm) 0;
+	min-height: 65px;
+	display: block;
+	width: 100%;
+}
+
+.cf-turnstile iframe {
+	border: none;
+	display: block;
+}
+
+/* Loading state for Turnstile */
+.cf-turnstile:empty::before {
+	content: 'Loading security verification...';
+	display: block;
+	color: var(--color-text-light);
+	font-size: 0.875rem;
+	padding: 1rem;
+	text-align: center;
 }
 
 /* Responsive Contact Form */

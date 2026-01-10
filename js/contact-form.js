@@ -14,67 +14,54 @@
 	const inputs = form.querySelectorAll('input, textarea');
 	
 	let isSubmitting = false;
-	let turnstileWidgetId = null;
+	let turnstileInitialized = false;
 
-	// Initialize Turnstile when script loads
-	function initializeTurnstile() {
-		if (typeof turnstile !== 'undefined') {
-			const widget = document.getElementById('turnstile-widget');
-			if (widget && !turnstileWidgetId) {
-				try {
-					// Use your Turnstile Site Key here (replace with your actual key)
-					const siteKey = '0x4AAAAAAABkMYinukE1B5qy'; // TODO: Replace with your actual Turnstile Site Key
-					
-					turnstileWidgetId = turnstile.render(widget, {
-						sitekey: siteKey,
-						theme: 'auto',
-						callback: function(token) {
-							// Token is ready - user has completed the challenge
-							console.log('Turnstile verified');
-						},
-						'error-callback': function() {
-							console.error('Turnstile error occurred');
-							showMessage('Security verification failed. Please refresh the page and try again.', 'error');
-						},
-						'expired-callback': function() {
-							console.log('Turnstile token expired');
-						}
-					});
-				} catch (error) {
-					console.error('Turnstile render error:', error);
-					showMessage('Unable to load security verification. Please refresh the page.', 'error');
-				}
+	// Check if Turnstile widget is loaded and visible
+	function checkTurnstileWidget() {
+		const widget = document.querySelector('.cf-turnstile');
+		if (widget) {
+			// Check if widget has rendered (has iframe or content)
+			const hasContent = widget.querySelector('iframe') || widget.children.length > 0;
+			if (hasContent) {
+				turnstileInitialized = true;
+				return true;
 			}
-		} else if (typeof turnstile === 'undefined') {
-			// Script not loaded yet, will retry
-			return false;
 		}
-		return true;
+		return false;
 	}
 
-	// Wait for Turnstile script to load
-	function waitForTurnstile() {
-		if (typeof turnstile !== 'undefined') {
-			initializeTurnstile();
-		} else {
-			// Retry after a short delay
-			setTimeout(waitForTurnstile, 100);
+	// Wait for Turnstile to load and render
+	function waitForTurnstileWidget() {
+		if (checkTurnstileWidget()) {
+			return; // Widget is ready
 		}
+		
+		// Check if Turnstile script is loaded
+		if (typeof turnstile === 'undefined') {
+			// Script not loaded yet, retry
+			setTimeout(waitForTurnstileWidget, 200);
+			return;
+		}
+		
+		// Script is loaded but widget might not be rendered yet
+		// Turnstile auto-renders when script loads, so just wait a bit
+		setTimeout(function() {
+			if (!checkTurnstileWidget()) {
+				// Widget still not visible after 2 seconds
+				console.warn('Turnstile widget not rendering. Check site key and network connection.');
+			}
+		}, 2000);
 	}
 
-	// Start initialization when DOM is ready
+	// Start checking when DOM is ready
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', waitForTurnstile);
+		document.addEventListener('DOMContentLoaded', waitForTurnstileWidget);
 	} else {
-		waitForTurnstile();
+		waitForTurnstileWidget();
 	}
 
-	// Also try when window loads (fallback)
-	window.addEventListener('load', function() {
-		if (!turnstileWidgetId) {
-			waitForTurnstile();
-		}
-	});
+	// Also check when window loads
+	window.addEventListener('load', waitForTurnstileWidget);
 
 	// Clear form message on input
 	inputs.forEach(input => {
@@ -219,8 +206,15 @@
 				showMessage('Thank you! Your message has been sent successfully.', 'success');
 				form.reset();
 				// Reset Turnstile
-				if (typeof turnstile !== 'undefined' && turnstileWidgetId !== null) {
-					turnstile.reset(turnstileWidgetId);
+				if (typeof turnstile !== 'undefined') {
+					const widget = document.querySelector('.cf-turnstile');
+					if (widget) {
+						try {
+							turnstile.reset();
+						} catch (e) {
+							// Reset failed, widget will reset on next render
+						}
+					}
 				}
 			} else {
 				showMessage(data.error || 'Something went wrong. Please try again.', 'error');
