@@ -31,11 +31,11 @@
 	                      window.location.hostname === '127.0.0.1' ||
 	                      window.location.hostname === '';
 	
-	// In production, always use AI via Cloudflare Pages Function (API key is in Pages env vars)
+	// In production, always use AI via Cloudflare Worker (API key is in GitHub secrets → Cloudflare env vars)
 	// In development, use AI if API key is available, otherwise use fallback
 	const USE_AI = isDevelopment 
 		? (API_PROVIDER !== 'fallback')  // Local dev: only if API key is set
-		: true;  // Production: always use AI via Pages Function (API key in Cloudflare Pages)
+		: true;  // Production: always use AI via Cloudflare Worker (API key from GitHub secrets)
 	
 	// In production, force Cohere provider (via proxy)
 	const PRODUCTION_API_PROVIDER = isDevelopment ? API_PROVIDER : 'cohere';
@@ -363,12 +363,12 @@
 				}
 				response = await generateAIResponse(message);
 				if (isDevelopment) {
-					console.log('AI Response received:', response.substring(0, 50) + '...');
+				console.log('AI Response received:', response.substring(0, 50) + '...');
 				}
 			} else {
 				// Use fallback knowledge base
 				if (isDevelopment) {
-					console.log('Using fallback responses (no API key detected)');
+				console.log('Using fallback responses (no API key detected)');
 				}
 				await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
 				response = generateResponse(message);
@@ -382,7 +382,7 @@
 			hideTypingIndicator();
 			// Fallback to knowledge base on error
 			if (isDevelopment) {
-				console.log('Falling back to keyword-based responses');
+			console.log('Falling back to keyword-based responses');
 			}
 			const fallbackResponse = generateResponse(message);
 			addMessage(fallbackResponse, 'bot');
@@ -456,7 +456,7 @@
 		
 		// Fallback for browsers that don't support scrollTo
 		if (typeof chatMessages.scrollTo !== 'function') {
-			chatMessages.scrollTop = chatMessages.scrollHeight;
+		chatMessages.scrollTop = chatMessages.scrollHeight;
 		}
 	}
 
@@ -569,21 +569,21 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 			message: msg.content
 		}));
 
-		// Check if we should use Pages Function (for production) or direct API (for local dev)
-		// Use Pages Function if: on production domain OR no API key available
+		// Check if we should use Cloudflare Worker (for production) or direct API (for local dev)
+		// Use Worker if: on production domain OR no API key available
 		// Use direct API if: on localhost AND API key is available
 		const isLocalhost = window.location.hostname === 'localhost' || 
 		                   window.location.hostname === '127.0.0.1' ||
 		                   window.location.hostname === '';
-		// In production, always use Pages Function (API key is in Cloudflare Pages env vars)
-		// In development, use Pages Function if no API key, otherwise use direct API
+		// In production, always use Cloudflare Worker (API key is in GitHub secrets → Cloudflare env vars)
+		// In development, use Worker if no API key, otherwise use direct API
 		const useProxy = !isLocalhost || !API_KEY;
 		
-		// API endpoint - Use Cloudflare Pages Function in production, direct API in dev
-		const PAGES_FUNCTION_URL = '/api/chat';
+		// API endpoint - Use Cloudflare Worker in production, direct API in dev
+		const WORKER_URL = '/api/chat';
 		
 		const apiEndpoint = useProxy 
-			? PAGES_FUNCTION_URL  // Cloudflare Pages Function (production) - same domain, no CORS
+			? WORKER_URL  // Cloudflare Worker (production) - same domain, no CORS
 			: 'https://api.cohere.ai/v1/chat';     // Direct API call (local dev only)
 
 		// Try available models in order (fallback if one doesn't work)
@@ -621,11 +621,11 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 					
 					let errorData = {};
 					if (isHTML) {
-						// Function not found - getting HTML 404 page
+						// Worker not found - getting HTML 404 page
 						errorData = {
-							error: 'Function not found - received HTML response',
+							error: 'Worker not found - received HTML response',
 							status: response.status,
-							message: 'The Pages Function at /api/chat is not deployed. Check Cloudflare Pages deployment logs.'
+							message: 'The Cloudflare Worker at /api/chat is not deployed. Check GitHub Actions logs and ensure GitHub secrets are configured.'
 						};
 					} else {
 						// Try to parse as JSON
@@ -652,7 +652,7 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 					// If model not found, try next model
 					if (errorData.message && errorData.message.includes('removed') && modelsToTry.indexOf(model) < modelsToTry.length - 1) {
 						if (isDevelopment) {
-							console.warn(`Model ${model} not available, trying next...`);
+						console.warn(`Model ${model} not available, trying next...`);
 						}
 						continue;
 					}
@@ -664,7 +664,7 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 					
 					const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}`;
 					if (isDevelopment) {
-						console.error('Cohere API error response:', errorData);
+					console.error('Cohere API error response:', errorData);
 					}
 					throw new Error(`Cohere API error: ${errorMessage}`);
 				}
@@ -674,12 +674,12 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 				// Cohere returns response in 'text' field
 				if (data.text) {
 					if (isDevelopment) {
-						console.log(`Successfully used model: ${model}`);
+					console.log(`Successfully used model: ${model}`);
 					}
 					return data.text.trim();
 				} else {
 					if (isDevelopment) {
-						console.warn('Unexpected Cohere response format:', data);
+					console.warn('Unexpected Cohere response format:', data);
 					}
 					throw new Error('Unexpected response format from Cohere API');
 				}
