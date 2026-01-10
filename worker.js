@@ -195,7 +195,7 @@ async function handleContactForm(request, env, corsHeaders) {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				from: 'Contact Form <onboarding@resend.dev>', // Update with your verified domain
+				from: 'Contact Form <noreply@resend.dev>', // Using Resend default domain
 				to: [contactEmail],
 				subject: `Contact Form: ${subject}`,
 				html: `
@@ -226,9 +226,27 @@ Sent from nandutangella.com contact form
 
 		if (!emailResponse.ok) {
 			const errorData = await emailResponse.text();
-			console.error('Email sending failed:', errorData);
+			console.error('Email sending failed:', {
+				status: emailResponse.status,
+				statusText: emailResponse.statusText,
+				error: errorData,
+				contactEmail: contactEmail
+			});
+			
+			// Return more detailed error for debugging
+			let errorMessage = 'Failed to send email. Please try again later.';
+			try {
+				const errorJson = JSON.parse(errorData);
+				if (errorJson.message) {
+					errorMessage = errorJson.message;
+				}
+			} catch (e) {
+				// Not JSON, use default message
+			}
+			
 			return new Response(JSON.stringify({ 
-				error: 'Failed to send email. Please try again later.' 
+				success: false,
+				error: errorMessage 
 			}), {
 				status: 500,
 				headers: {

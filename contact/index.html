@@ -40,9 +40,6 @@
 	<!-- Styles -->
 	<link rel="stylesheet" href="../css/style.css">
 	
-	<!-- Cloudflare Turnstile -->
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
-	
 	<!-- Google Tag Manager -->
 	<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NQGTH3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NQGTH3');</script>
@@ -109,7 +106,11 @@
 			</div>
 
 			<div class="contact-form-wrapper">
-				<form class="contact-form" id="contactForm" novalidate>
+				<!-- 
+					Get your free Web3Forms access key from: https://web3forms.com
+					Add it as data-access-key attribute below, or update in contact-form.js
+				-->
+				<form class="contact-form" id="contactForm" novalidate data-access-key="71b8280a-8123-4d53-a135-66aa60412968">
 					<div class="form-group">
 						<label for="name" class="form-label">Name</label>
 						<input 
@@ -168,15 +169,7 @@
 						<span class="form-error" id="message-error" role="alert"></span>
 					</div>
 
-					<!-- Cloudflare Turnstile -->
-					<!-- TODO: Replace with your Turnstile Site Key from Cloudflare Dashboard -->
-					<div class="form-group">
-						<label class="form-label">Security Verification</label>
-						<div class="cf-turnstile" data-sitekey="0x4AAAAAACLozu6VxTbgKvC9" data-theme="auto"></div>
-						<small style="display: block; margin-top: 0.5rem; color: var(--color-text-light); font-size: 0.75rem;">
-							Protected by Cloudflare Turnstile
-						</small>
-					</div>
+					<!-- Web3Forms has built-in spam protection, no additional verification needed -->
 
 					<div class="form-group">
 						<button type="submit" class="form-submit" id="submitButton" aria-label="Send message">
