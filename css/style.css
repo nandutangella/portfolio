@@ -2059,13 +2059,13 @@ body.chat-open .nav {
 
 .chat-message-bot .chat-message-content {
 	background: var(--color-gray-100);
-	color: var(--color-text);
+	color: var(--color-black);
 	border-bottom-left-radius: 4px;
 }
 
 [data-theme="dark"] .chat-message-bot .chat-message-content {
 	background: var(--color-gray-800);
-	color: var(--color-text);
+	color: var(--color-black);
 }
 
 .chat-message-content p {

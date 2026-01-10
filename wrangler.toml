@@ -4,7 +4,8 @@ compatibility_date = "2025-01-10"
 
 [env.production]
 routes = [
-  { pattern = "nandutangella.com/api/chat", zone_name = "nandutangella.com" }
+  { pattern = "nandutangella.com/api/chat", zone_name = "nandutangella.com" },
+  { pattern = "nandutangella.com/api/*", zone_name = "nandutangella.com" }
 ]
 
 # Environment variables can be set in two ways:
