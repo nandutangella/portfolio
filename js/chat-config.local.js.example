@@ -1,0 +1,11 @@
+/**
+ * Chat Widget Configuration - Local (DO NOT COMMIT)
+ * 
+ * Copy this file to chat-config.local.js and add your API keys
+ * The .local.js file is ignored by git for security
+ */
+
+// Free API Options (choose one):
+window.HUGGINGFACE_API_KEY = ''; // Free tier available at huggingface.co
+window.COHERE_API_KEY = ''; // Add your Cohere API key here
+window.OPENAI_API_KEY = ''; // Requires payment method

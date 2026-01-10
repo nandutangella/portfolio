@@ -26,8 +26,10 @@
  */
 
 // Free API Options (choose one):
+// IMPORTANT: Never commit API keys to git! Use environment variables or a backend proxy.
+// Copy this file to chat-config.local.js and add your keys there (add .local.js to .gitignore)
 window.HUGGINGFACE_API_KEY = ''; // Free tier available at huggingface.co
-window.COHERE_API_KEY = '""'; // Free tier available at cohere.com
+window.COHERE_API_KEY = ''; // Free tier available at cohere.com
 
 // Paid Option:
 window.OPENAI_API_KEY = ''; // Requires payment method
