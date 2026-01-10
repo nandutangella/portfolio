@@ -7,56 +7,46 @@
  * 2. Deploy your site - the function will be available at /api/chat
  */
 
-export async function onRequest({ request, env }) {
-	// Get origin from request for CORS
+// Helper function for CORS headers
+function getCorsHeaders(request) {
 	const origin = request.headers.get('Origin') || request.headers.get('origin');
-	
-	// CORS headers for all responses
-	const corsHeaders = {
+	return {
 		'Access-Control-Allow-Origin': origin || '*',
-		'Access-Control-Allow-Methods': 'POST, OPTIONS',
+		'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
 		'Access-Control-Allow-Headers': 'Content-Type, Accept',
 		'Access-Control-Max-Age': '86400',
 	};
+}
 
-	// Handle OPTIONS preflight
-	if (request.method === 'OPTIONS') {
-		return new Response(null, {
-			status: 204,
-			headers: corsHeaders,
-		});
-	}
+// Handle OPTIONS preflight
+export async function onRequestOptions({ request }) {
+	return new Response(null, {
+		status: 204,
+		headers: getCorsHeaders(request),
+	});
+}
 
-	// Allow GET for testing/debugging
-	if (request.method === 'GET') {
-		return new Response(JSON.stringify({ 
-			status: 'Function is running!',
-			method: request.method,
-			url: request.url,
-			hasApiKey: !!env.COHERE_API_KEY
-		}), {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/json',
-				...corsHeaders,
-			},
-		});
-	}
+// Handle GET requests (for testing)
+export async function onRequestGet({ request, env }) {
+	const corsHeaders = getCorsHeaders(request);
+	return new Response(JSON.stringify({ 
+		status: 'Function is running!',
+		method: 'GET',
+		url: request.url,
+		hasApiKey: !!env.COHERE_API_KEY,
+		timestamp: new Date().toISOString()
+	}), {
+		status: 200,
+		headers: {
+			'Content-Type': 'application/json',
+			...corsHeaders,
+		},
+	});
+}
 
-	// Only allow POST requests
-	if (request.method !== 'POST') {
-		return new Response(JSON.stringify({ 
-			error: 'Method not allowed',
-			method: request.method,
-			url: request.url
-		}), {
-			status: 405,
-			headers: {
-				'Content-Type': 'application/json',
-				...corsHeaders,
-			},
-		});
-	}
+// Handle POST requests
+export async function onRequestPost({ request, env }) {
+	const corsHeaders = getCorsHeaders(request);
 
 	// Get API key from Cloudflare Pages environment variable
 	const API_KEY = env.COHERE_API_KEY;
