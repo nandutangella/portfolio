@@ -1,0 +1,10 @@
+# Strip /index.html from URLs (301 permanent redirect - changes URL in browser)
+# This masks /index.html so users see clean URLs like / instead of /index.html
+/index.html / 301
+/books/index.html /books/ 301
+/contact/index.html /contact/ 301
+/portfolio/index.html /portfolio/ 301
+/products/index.html /products/ 301
+
+# Note: www redirect should be configured in Cloudflare DNS/Page Rules
+# See WWW_REDIRECT_SETUP.md for instructions

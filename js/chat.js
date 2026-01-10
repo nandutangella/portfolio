@@ -64,6 +64,14 @@
 	// State
 	let isOpen = false;
 	let messageHistory = [];
+	let placeholderInterval = null;
+	let currentPlaceholderIndex = 0;
+	const placeholders = [
+		'Ask Nandu...',
+		'Ask me about design...',
+		'Ask me about AI...',
+		'Ask me about my work...'
+	];
 
 	// Knowledge base for responses (first person)
 	const knowledgeBase = {
@@ -119,6 +127,31 @@
 		initialViewportHeight = visualViewport.height;
 	}
 
+	// Start placeholder rotation
+	function startPlaceholderRotation() {
+		if (!chatInput || placeholderInterval) return;
+		
+		// Set initial placeholder
+		chatInput.placeholder = placeholders[currentPlaceholderIndex];
+		
+		// Rotate every 3 seconds
+		placeholderInterval = setInterval(() => {
+			if (!chatInput || chatInput === document.activeElement || isOpen) {
+				return;
+			}
+			currentPlaceholderIndex = (currentPlaceholderIndex + 1) % placeholders.length;
+			chatInput.placeholder = placeholders[currentPlaceholderIndex];
+		}, 3000);
+	}
+	
+	// Stop placeholder rotation
+	function stopPlaceholderRotation() {
+		if (placeholderInterval) {
+			clearInterval(placeholderInterval);
+			placeholderInterval = null;
+		}
+	}
+	
 	// Initialize chat
 	function initChat() {
 		if (!chatWidget || !chatContainer || !chatInput) return;
@@ -143,6 +176,7 @@
 
 		// Focus input to open chat and blur page
 		chatInput.addEventListener('focus', () => {
+			stopPlaceholderRotation();
 			if (!isOpen) {
 				openChat();
 				// Focus inner input after opening
@@ -153,6 +187,25 @@
 				}, 150);
 			}
 		});
+		
+		// Resume placeholder rotation when outer input loses focus (if chat is closed)
+		chatInput.addEventListener('blur', () => {
+			if (!isOpen && !chatInput.value.trim()) {
+				startPlaceholderRotation();
+			}
+		});
+		
+		// Stop rotation when user starts typing
+		chatInput.addEventListener('input', () => {
+			if (chatInput.value.trim()) {
+				stopPlaceholderRotation();
+			} else if (!isOpen && chatInput !== document.activeElement) {
+				startPlaceholderRotation();
+			}
+		});
+		
+		// Start placeholder rotation for outer input
+		startPlaceholderRotation();
 		
 		if (chatInputInner) {
 			chatInputInner.addEventListener('focus', () => {
@@ -331,6 +384,10 @@
 		// Blur inputs
 		if (chatInput) {
 			chatInput.blur();
+			// Resume placeholder rotation if input is empty
+			if (!chatInput.value.trim()) {
+				startPlaceholderRotation();
+			}
 		}
 		if (chatInputInner) {
 			chatInputInner.blur();
