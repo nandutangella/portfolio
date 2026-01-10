@@ -27,6 +27,22 @@ export async function onRequest({ request, env }) {
 		});
 	}
 
+	// Allow GET for testing/debugging
+	if (request.method === 'GET') {
+		return new Response(JSON.stringify({ 
+			status: 'Function is running!',
+			method: request.method,
+			url: request.url,
+			hasApiKey: !!env.COHERE_API_KEY
+		}), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				...corsHeaders,
+			},
+		});
+	}
+
 	// Only allow POST requests
 	if (request.method !== 'POST') {
 		return new Response(JSON.stringify({ 
