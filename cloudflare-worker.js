@@ -13,15 +13,19 @@
 
 export default {
 	async fetch(request, env) {
+		// CORS headers for all responses
+		const corsHeaders = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+			'Access-Control-Allow-Headers': 'Content-Type, Accept, Authorization',
+			'Access-Control-Max-Age': '86400',
+		};
+
 		// Handle CORS preflight
 		if (request.method === 'OPTIONS') {
 			return new Response(null, {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'POST, OPTIONS',
-					'Access-Control-Allow-Headers': 'Content-Type',
-					'Access-Control-Max-Age': '86400',
-				},
+				status: 204,
+				headers: corsHeaders,
 			});
 		}
 
@@ -31,7 +35,7 @@ export default {
 				status: 405,
 				headers: {
 					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
+					...corsHeaders,
 				},
 			});
 		}
@@ -44,7 +48,7 @@ export default {
 				status: 500,
 				headers: {
 					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
+					...corsHeaders,
 				},
 			});
 		}
@@ -69,8 +73,7 @@ export default {
 				status: response.status,
 				headers: {
 					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Headers': 'Content-Type',
+					...corsHeaders,
 				},
 			});
 		} catch (error) {
@@ -78,7 +81,7 @@ export default {
 				status: 500,
 				headers: {
 					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
+					...corsHeaders,
 				},
 			});
 		}
