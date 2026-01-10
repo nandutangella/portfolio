@@ -9,7 +9,7 @@
 
 export async function onRequest({ request, env }) {
 	// Get origin from request for CORS
-	const origin = request.headers.get('Origin');
+	const origin = request.headers.get('Origin') || request.headers.get('origin');
 	
 	// CORS headers for all responses
 	const corsHeaders = {
@@ -29,7 +29,11 @@ export async function onRequest({ request, env }) {
 
 	// Only allow POST requests
 	if (request.method !== 'POST') {
-		return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+		return new Response(JSON.stringify({ 
+			error: 'Method not allowed',
+			method: request.method,
+			url: request.url
+		}), {
 			status: 405,
 			headers: {
 				'Content-Type': 'application/json',
