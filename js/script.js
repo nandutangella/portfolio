@@ -478,15 +478,15 @@
 				const href = link.getAttribute('href');
 				if (!href) return;
 				
-				// Only match Portfolio link - exact match for index.html or relative paths that don't include products/books
+				// Only match Portfolio link - exact match for index.html or relative paths that don't include products/books/contact
 				// Check for exact matches first
 				if (href === 'index.html' || href === '/' || href === '#') {
 					link.classList.add('active');
 					return;
 				}
 				
-				// Check for paths ending with index.html but not containing products or books
-				if (href.endsWith('index.html') && !href.includes('products') && !href.includes('books')) {
+				// Check for paths ending with index.html but not containing products, books, or contact
+				if (href.endsWith('index.html') && !href.includes('products') && !href.includes('books') && !href.includes('contact')) {
 					link.classList.add('active');
 					return;
 				}
