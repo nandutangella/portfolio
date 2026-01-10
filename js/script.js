@@ -8,6 +8,7 @@
 
 	// DOM Elements
 	const nav = document.getElementById('nav');
+	const navContainer = document.querySelector('.nav-container');
 	const navToggle = document.querySelector('.nav-toggle');
 	const navLinks = document.querySelector('.nav-links');
 	const workItems = document.querySelectorAll('.work-item');
@@ -56,10 +57,14 @@
 
 	// Mobile Navigation Toggle
 	if (navToggle && navLinks) {
-		navToggle.addEventListener('click', () => {
+		navToggle.addEventListener('click', (e) => {
+			e.stopPropagation();
+			const isActive = navLinks.classList.contains('active');
 			navToggle.classList.toggle('active');
 			navLinks.classList.toggle('active');
-			document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+			nav.classList.toggle('menu-open');
+			document.body.classList.toggle('menu-open');
+			document.body.style.overflow = !isActive ? 'hidden' : '';
 		});
 
 		// Close mobile nav when clicking a link
@@ -67,16 +72,23 @@
 			link.addEventListener('click', () => {
 				navToggle.classList.remove('active');
 				navLinks.classList.remove('active');
+				nav.classList.remove('menu-open');
+				document.body.classList.remove('menu-open');
 				document.body.style.overflow = '';
 			});
 		});
 
 		// Close mobile nav when clicking outside
 		document.addEventListener('click', (e) => {
-			if (!nav.contains(e.target) && navLinks.classList.contains('active')) {
-				navToggle.classList.remove('active');
-				navLinks.classList.remove('active');
-				document.body.style.overflow = '';
+			if (navLinks.classList.contains('active')) {
+				// If click is outside nav-container and nav-links
+				if (navContainer && !navContainer.contains(e.target) && !navLinks.contains(e.target)) {
+					navToggle.classList.remove('active');
+					navLinks.classList.remove('active');
+					nav.classList.remove('menu-open');
+					document.body.classList.remove('menu-open');
+					document.body.style.overflow = '';
+				}
 			}
 		});
 	}
@@ -392,108 +404,93 @@
 		// Always remove active class from all nav links first
 		navLinks.forEach(link => link.classList.remove('active'));
 		
-		// Get current page path
-		const currentPath = window.location.pathname;
-		const isHomePage = currentPath === '/' || currentPath.endsWith('/index.html') || currentPath.endsWith('/');
-		const isPortfolioPage = currentPath.includes('/portfolio/');
-		const isBooksPage = currentPath.includes('/books/');
+		// Get current page path and normalize it
+		let currentPath = window.location.pathname;
+		const currentHash = window.location.hash;
 		
-		// Handle non-home pages
-		if (!isHomePage) {
+		// Normalize path
+		if (currentPath.endsWith('/')) {
+			currentPath = currentPath.slice(0, -1);
+		}
+		if (currentPath === '' || currentPath === '/') {
+			currentPath = '/index.html';
+		}
+		
+		// Determine which page we're on
+		const isHomePage = currentPath === '/index.html' || currentPath.endsWith('/index.html');
+		const isBooksPage = currentPath.includes('/books/');
+		const isProductsPage = currentPath.includes('/products/');
+		
+		// Handle specific pages first
+		if (isBooksPage) {
 			navLinks.forEach(link => {
 				const href = link.getAttribute('href');
 				if (!href) return;
-				
-				if (isPortfolioPage && (href.includes('portfolio') || href.includes('#portfolio'))) {
+				// Match Books link - must be #books or contain /books/ but not /products/
+				if (href === '#books' || (href.includes('/books/') && !href.includes('/products/'))) {
 					link.classList.add('active');
-				} else if (isBooksPage && (href === '#books' || href.includes('books') || href.includes('/books/'))) {
+					return; // Only mark one as active
+				}
+			});
+			return;
+		}
+		
+		if (isProductsPage) {
+			navLinks.forEach(link => {
+				const href = link.getAttribute('href');
+				if (!href) return;
+				// Match Products link - must be #products or contain /products/ but not /books/
+				if (href === '#products' || (href.includes('/products/') && !href.includes('/books/'))) {
 					link.classList.add('active');
+					return; // Only mark one as active
 				}
 			});
 			return;
 		}
 		
 		// Handle home page - check which section is visible
-		const sections = document.querySelectorAll('section[id]');
-		if (sections.length === 0) return;
-		
-		// If at top of page (hero visible) and no hash, no active state
-		if (window.scrollY < 100 && !window.location.hash) {
-			return;
-		}
-		
-		// If there's a hash in URL, use that
-		if (window.location.hash) {
-			const hashId = window.location.hash.substring(1);
+		if (isHomePage) {
+			// If there's a hash in URL, use that first
+			if (currentHash) {
+				const hashId = currentHash.substring(1);
+				navLinks.forEach(link => {
+					const href = link.getAttribute('href');
+					if (!href) return;
+					
+					let targetId = '';
+					if (href.startsWith('#')) {
+						targetId = href.substring(1);
+					} else if (href.includes('#')) {
+						targetId = href.split('#')[1];
+					}
+					
+					if (targetId === hashId) {
+						link.classList.add('active');
+						return;
+					}
+				});
+				return;
+			}
+			
+			// On home page, always show Portfolio as active (since it's the home page)
 			navLinks.forEach(link => {
 				const href = link.getAttribute('href');
 				if (!href) return;
 				
-				let targetId = '';
-				if (href.startsWith('#')) {
-					targetId = href.substring(1);
-				} else if (href.includes('#')) {
-					targetId = href.split('#')[1];
+				// Only match Portfolio link - exact match for index.html or relative paths that don't include products/books
+				// Check for exact matches first
+				if (href === 'index.html' || href === '/' || href === '#') {
+					link.classList.add('active');
+					return;
 				}
 				
-				if (targetId === hashId) {
+				// Check for paths ending with index.html but not containing products or books
+				if (href.endsWith('index.html') && !href.includes('products') && !href.includes('books')) {
 					link.classList.add('active');
-					return; // Only one should be active
+					return;
 				}
 			});
 			return;
-		}
-		
-		// Find which section is most visible in viewport
-		let activeSectionId = '';
-		let maxVisibleRatio = 0;
-		
-		sections.forEach(section => {
-			const rect = section.getBoundingClientRect();
-			const viewportHeight = window.innerHeight;
-			
-			// Calculate how much of the section is visible
-			const sectionTop = rect.top;
-			const sectionBottom = rect.bottom;
-			const sectionHeight = rect.height;
-			
-			// Check if section is in viewport
-			if (sectionBottom < 0 || sectionTop > viewportHeight) {
-				return; // Section not visible
-			}
-			
-			// Calculate visible portion
-			const visibleTop = Math.max(0, sectionTop);
-			const visibleBottom = Math.min(viewportHeight, sectionBottom);
-			const visibleHeight = visibleBottom - visibleTop;
-			const visibleRatio = visibleHeight / Math.max(sectionHeight, viewportHeight);
-			
-			// Section must be at least 25% visible and above the fold
-			if (visibleRatio > 0.25 && sectionTop < viewportHeight * 0.8) {
-				if (visibleRatio > maxVisibleRatio) {
-					maxVisibleRatio = visibleRatio;
-					activeSectionId = section.id;
-				}
-			}
-		});
-		
-		// Mark only the active section's nav link
-		if (activeSectionId) {
-			navLinks.forEach(link => {
-				const href = link.getAttribute('href');
-				if (!href) return;
-				
-				let targetId = '';
-				if (href.startsWith('#')) {
-					targetId = href.substring(1);
-				} else if (href.includes('#')) {
-					targetId = href.split('#')[1];
-				}
-				
-				if (targetId === activeSectionId) {
-					link.classList.add('active');
-				}
-			});
 		}
 	}
 	
@@ -510,12 +507,23 @@
 	}
 	
 	window.addEventListener('scroll', requestNavUpdate, { passive: true });
-	window.addEventListener('load', updateActiveNav);
+	window.addEventListener('load', () => {
+		setTimeout(updateActiveNav, 100);
+	});
 	
 	// Also update on hash change (for cross-page navigation)
 	window.addEventListener('hashchange', () => {
 		setTimeout(updateActiveNav, 100);
 	});
+	
+	// Initial call after DOM is ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			setTimeout(updateActiveNav, 200);
+		});
+	} else {
+		setTimeout(updateActiveNav, 200);
+	}
 
 	// Logo click handler - scroll to top on same page, or navigate home
 	if (navLogo) {

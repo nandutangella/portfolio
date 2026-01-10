@@ -12,7 +12,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	
 	<!-- Modern Typography -->
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 	
 	<!-- Styles -->
 	<link rel="stylesheet" href="../css/style.css">
@@ -29,8 +29,8 @@
 				<span class="nav-logo-text">NT</span>
 			</a>
 			<div class="nav-links">
-				<a href="../index.html#portfolio" class="nav-link">Portfolio</a>
-				<a href="../index.html#products" class="nav-link">Products</a>
+				<a href="../index.html" class="nav-link">Portfolio</a>
+				<a href="../products/index.html" class="nav-link">Products</a>
 				<a href="#books" class="nav-link">Books</a>
 			</div>
 			<div class="nav-actions">
@@ -201,7 +201,76 @@
 		</div>
 	</footer>
 
+	<!-- Chat Widget -->
+	<div class="chat-widget" id="chatWidget">
+		<div class="chat-backdrop" id="chatBackdrop"></div>
+		<!-- Input container - always visible at bottom -->
+		<div class="chat-input-container" id="chatInputContainer">
+			<form class="chat-form" id="chatForm">
+				<input 
+					type="text" 
+					class="chat-input" 
+					id="chatInput" 
+					placeholder="Ask Nandu..." 
+					autocomplete="off"
+					aria-label="Chat input"
+				>
+				<button type="submit" class="chat-send" aria-label="Send message">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="22" y1="2" x2="11" y2="13"></line>
+						<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+					</svg>
+				</button>
+			</form>
+		</div>
+		<!-- Chat container - shown when active -->
+		<div class="chat-container" id="chatContainer">
+			<div class="chat-header">
+				<div class="chat-header-content">
+					<div class="chat-avatar">
+						<span>NT</span>
+					</div>
+					<div class="chat-header-text">
+						<h3 class="chat-title">Ask Nandu</h3>
+					</div>
+				</div>
+				<button class="chat-close" id="chatClose" aria-label="Close chat">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M18 6L6 18M6 6l12 12"/>
+					</svg>
+				</button>
+			</div>
+			<div class="chat-messages" id="chatMessages">
+				<div class="chat-message chat-message-bot">
+					<div class="chat-message-content">
+						<p>Hi! I'm Nandu. Ask me anything about design, AI, or my work!</p>
+					</div>
+				</div>
+			</div>
+			<div class="chat-input-container-inner">
+				<form class="chat-form" id="chatFormInner">
+					<input 
+						type="text" 
+						class="chat-input" 
+						id="chatInputInner" 
+						placeholder="Ask Nandu..." 
+						autocomplete="off"
+						aria-label="Chat input"
+					>
+					<button type="submit" class="chat-send" aria-label="Send message">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="22" y1="2" x2="11" y2="13"></line>
+							<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+						</svg>
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<!-- Scripts -->
 	<script src="../js/script.js"></script>
+	<script src="../js/chat-config.js"></script>
+	<script src="../js/chat.js"></script>
 </body>
 </html>
