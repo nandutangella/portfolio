@@ -346,7 +346,7 @@
 		'cursor': 'https://cursor.sh',
 		'figma': 'https://www.figma.com',
 		'icontactcamera': 'https://www.icontactcamera.com',
-		'raycast': 'https://www.raycast.com'
+		'arc': 'https://arc.net'
 	};
 
 	productItems.forEach(item => {
@@ -669,6 +669,24 @@
 		textElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
 		textElement.style.display = 'inline-block';
 	});
+
+	// Add year to work titles
+	function addYearToTitles() {
+		const workItems = document.querySelectorAll('.work-item[data-year]');
+		workItems.forEach(item => {
+			const year = item.getAttribute('data-year');
+			const title = item.querySelector('.work-title');
+			if (title && year && !title.querySelector('.work-year')) {
+				const yearSpan = document.createElement('span');
+				yearSpan.className = 'work-year';
+				yearSpan.textContent = year;
+				title.appendChild(yearSpan);
+			}
+		});
+	}
+
+	// Initialize year display
+	addYearToTitles();
 
 	// Console message for developers
 	if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
