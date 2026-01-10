@@ -1802,6 +1802,16 @@ body.chat-open .nav {
 	transition: filter var(--transition-smooth);
 }
 
+/* Prevent body scroll on mobile when chat is open */
+@media (max-width: 768px) {
+	body.chat-open {
+		overflow: hidden;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+	}
+}
+
 /* Input container - always visible at bottom when chat is closed */
 .chat-input-container {
 	position: fixed;
@@ -2082,12 +2092,17 @@ body.chat-open .nav {
 	border-radius: 9999px;
 	background: var(--color-bg);
 	color: var(--color-text);
-	font-size: 0.9375rem;
+	font-size: 16px; /* Prevent zoom on iOS */
 	font-family: var(--font-primary);
 	outline: none;
 	transition: all var(--transition-base);
 	position: relative;
 	animation: borderTrail 3s ease-in-out infinite;
+	-webkit-appearance: none;
+	appearance: none;
+	touch-action: manipulation;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 /* Animated border trailing effect */
@@ -2165,12 +2180,29 @@ body.chat-open .nav {
 	border-color: var(--color-black);
 	box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 	animation: none;
+	transform: scale(1);
+	outline: none;
 }
 
 [data-theme="dark"] .chat-input:focus {
 	border-color: var(--color-white);
 	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 	animation: none;
+	transform: scale(1);
+	outline: none;
+}
+
+/* Mobile-specific input improvements */
+@media (max-width: 768px) {
+	.chat-input {
+		font-size: 16px; /* Critical: prevents iOS zoom on focus */
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+	}
+	
+	.chat-input:focus {
+		transform: none; /* Prevent any scaling that might cause issues */
+	}
 }
 
 .chat-input::placeholder {
@@ -2180,6 +2212,8 @@ body.chat-open .nav {
 .chat-send {
 	width: 44px;
 	height: 44px;
+	min-width: 44px; /* Ensure minimum touch target */
+	min-height: 44px;
 	border-radius: 50%;
 	background: linear-gradient(135deg, var(--color-black) 0%, var(--color-gray-800) 100%);
 	color: var(--color-white);
@@ -2191,6 +2225,10 @@ body.chat-open .nav {
 	transition: all var(--transition-base);
 	flex-shrink: 0;
 	box-shadow: var(--shadow-sm);
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 [data-theme="dark"] .chat-send {
@@ -2281,12 +2319,19 @@ body.chat-open .nav {
 		padding-bottom: env(safe-area-inset-bottom);
 		box-sizing: border-box;
 		overflow: hidden;
+		/* Smooth transitions for keyboard */
+		transition: height var(--transition-base), max-height var(--transition-base);
+		/* Prevent layout shifts */
+		contain: layout style paint;
 	}
 	
 	.chat-header {
 		padding: 1.25rem 1.5rem;
 		padding-top: calc(1.25rem + env(safe-area-inset-top));
 		flex-shrink: 0;
+		/* Prevent header from moving when keyboard appears */
+		position: relative;
+		z-index: 5;
 	}
 	
 	.chat-messages {
@@ -2294,13 +2339,26 @@ body.chat-open .nav {
 		flex: 1;
 		min-height: 0;
 		overflow-y: auto;
+		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
+		scroll-behavior: smooth;
+		overscroll-behavior: contain;
+		/* Optimize scrolling performance */
+		will-change: scroll-position;
+		transform: translateZ(0);
+		-webkit-transform: translateZ(0);
 	}
 	
 	.chat-input-container-inner {
 		padding: 1rem 1.5rem;
 		padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 		flex-shrink: 0;
+		background: var(--color-bg);
+		position: sticky;
+		bottom: 0;
+		z-index: 10;
+		/* Smooth keyboard transitions */
+		transition: padding-bottom var(--transition-base);
 	}
 }
 
@@ -2327,12 +2385,19 @@ body.chat-open .nav {
 		padding-bottom: env(safe-area-inset-bottom);
 		box-sizing: border-box;
 		overflow: hidden;
+		/* Smooth transitions for keyboard */
+		transition: height var(--transition-base), max-height var(--transition-base);
+		/* Prevent layout shifts */
+		contain: layout style paint;
 	}
 	
 	.chat-header {
 		padding: 1rem 1.25rem;
 		padding-top: calc(1rem + env(safe-area-inset-top));
 		flex-shrink: 0;
+		/* Prevent header from moving when keyboard appears */
+		position: relative;
+		z-index: 5;
 	}
 	
 	.chat-messages {
@@ -2340,13 +2405,26 @@ body.chat-open .nav {
 		flex: 1;
 		min-height: 0;
 		overflow-y: auto;
+		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
+		scroll-behavior: smooth;
+		overscroll-behavior: contain;
+		/* Optimize scrolling performance */
+		will-change: scroll-position;
+		transform: translateZ(0);
+		-webkit-transform: translateZ(0);
 	}
 	
 	.chat-input-container-inner {
 		padding: 0.875rem 1.25rem;
 		padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));
 		flex-shrink: 0;
+		background: var(--color-bg);
+		position: sticky;
+		bottom: 0;
+		z-index: 10;
+		/* Smooth keyboard transitions */
+		transition: padding-bottom var(--transition-base);
 	}
 	
 	.chat-message-content {

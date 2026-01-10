@@ -26,12 +26,19 @@
 		API_KEY = OPENAI_API_KEY;
 	}
 	
-	const USE_AI = API_PROVIDER !== 'fallback';
-	
 	// Debug mode: only log in development
 	const isDevelopment = window.location.hostname === 'localhost' || 
 	                      window.location.hostname === '127.0.0.1' ||
 	                      window.location.hostname === '';
+	
+	// In production, always use AI via Cloudflare Worker (API key is in Worker)
+	// In development, use AI if API key is available, otherwise use fallback
+	const USE_AI = isDevelopment 
+		? (API_PROVIDER !== 'fallback')  // Local dev: only if API key is set
+		: true;  // Production: always use AI via proxy (API key in Cloudflare Worker)
+	
+	// In production, force Cohere provider (via proxy)
+	const PRODUCTION_API_PROVIDER = isDevelopment ? API_PROVIDER : 'cohere';
 	
 	// Debug: Log API key detection (development only)
 	if (isDevelopment) {
@@ -40,7 +47,7 @@
 			cohere: COHERE_API_KEY ? 'Set (' + COHERE_API_KEY.substring(0, 10) + '...)' : 'Not set',
 			openai: OPENAI_API_KEY ? 'Set' : 'Not set'
 		});
-		console.log('Selected API Provider:', API_PROVIDER, USE_AI ? '(AI Enabled)' : '(Using Fallback)');
+		console.log('Selected API Provider:', PRODUCTION_API_PROVIDER, USE_AI ? '(AI Enabled)' : '(Using Fallback)');
 	}
 
 	// DOM Elements
@@ -97,6 +104,21 @@
 		]
 	};
 
+	// Mobile detection
+	const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+	const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+	
+	// Visual Viewport API for keyboard detection
+	let visualViewport = null;
+	let keyboardHeight = 0;
+	let initialViewportHeight = window.innerHeight;
+	
+	// Initialize visual viewport when available
+	if (window.visualViewport) {
+		visualViewport = window.visualViewport;
+		initialViewportHeight = visualViewport.height;
+	}
+
 	// Initialize chat
 	function initChat() {
 		if (!chatWidget || !chatContainer || !chatInput) return;
@@ -128,13 +150,25 @@
 					if (chatInputInner) {
 						chatInputInner.focus();
 					}
-				}, 100);
+				}, 150);
 			}
 		});
 		
 		if (chatInputInner) {
 			chatInputInner.addEventListener('focus', () => {
-				setTimeout(() => scrollToBottom(), 100);
+				handleInputFocus();
+			});
+			
+			chatInputInner.addEventListener('blur', () => {
+				handleInputBlur();
+			});
+			
+			// Handle input changes for better UX
+			chatInputInner.addEventListener('input', () => {
+				// Smooth scroll to bottom as user types
+				requestAnimationFrame(() => {
+					scrollToBottom();
+				});
 			});
 		}
 
@@ -144,6 +178,106 @@
 				closeChat();
 			}
 		});
+
+		// Visual Viewport API for keyboard handling (mobile)
+		if (visualViewport && isMobile) {
+			visualViewport.addEventListener('resize', handleViewportResize);
+			visualViewport.addEventListener('scroll', handleViewportScroll);
+		}
+		
+		// Fallback for older browsers
+		if (isMobile && !visualViewport) {
+			window.addEventListener('resize', handleWindowResize);
+		}
+	}
+	
+	// Handle viewport resize (keyboard show/hide)
+	function handleViewportResize() {
+		if (!isOpen || !chatContainer || !visualViewport) return;
+		
+		const currentHeight = visualViewport.height;
+		const heightDiff = initialViewportHeight - currentHeight;
+		
+		// Keyboard is likely open if viewport shrunk significantly
+		if (heightDiff > 150) {
+			keyboardHeight = heightDiff;
+			adjustChatForKeyboard(true);
+		} else {
+			keyboardHeight = 0;
+			adjustChatForKeyboard(false);
+		}
+	}
+	
+	// Handle viewport scroll (keyboard adjustments)
+	function handleViewportScroll() {
+		if (!isOpen || !chatContainer || !chatInputInner) return;
+		
+		// Keep input visible above keyboard
+		requestAnimationFrame(() => {
+			scrollToBottom();
+		});
+	}
+	
+	// Fallback window resize handler
+	function handleWindowResize() {
+		if (!isOpen || !chatContainer) return;
+		
+		const currentHeight = window.innerHeight;
+		const heightDiff = initialViewportHeight - currentHeight;
+		
+		if (heightDiff > 150) {
+			keyboardHeight = heightDiff;
+			adjustChatForKeyboard(true);
+		} else {
+			keyboardHeight = 0;
+			adjustChatForKeyboard(false);
+		}
+	}
+	
+	// Adjust chat container for keyboard
+	function adjustChatForKeyboard(keyboardOpen) {
+		if (!chatContainer) return;
+		
+		if (keyboardOpen && isMobile) {
+			chatContainer.style.height = `${visualViewport ? visualViewport.height : window.innerHeight}px`;
+			chatContainer.style.maxHeight = `${visualViewport ? visualViewport.height : window.innerHeight}px`;
+			
+			// Scroll to bottom after keyboard appears
+			setTimeout(() => {
+				scrollToBottom();
+			}, 100);
+		} else {
+			// Reset to full height
+			chatContainer.style.height = '';
+			chatContainer.style.maxHeight = '';
+		}
+	}
+	
+	// Handle input focus
+	function handleInputFocus() {
+		if (!isMobile) return;
+		
+		// Prevent body scroll
+		document.body.style.overflow = 'hidden';
+		document.body.style.position = 'fixed';
+		document.body.style.width = '100%';
+		
+		// Scroll to bottom
+		setTimeout(() => {
+			scrollToBottom();
+		}, 300); // Wait for keyboard animation
+	}
+	
+	// Handle input blur
+	function handleInputBlur() {
+		if (!isMobile) return;
+		
+		// Restore body scroll
+		setTimeout(() => {
+			document.body.style.overflow = '';
+			document.body.style.position = '';
+			document.body.style.width = '';
+		}, 100);
 	}
 
 	// Open chat
@@ -154,8 +288,22 @@
 		chatWidget.classList.add('active');
 		document.body.classList.add('chat-open');
 		
+		// Store initial viewport height (update if visual viewport is available)
+		if (visualViewport) {
+			initialViewportHeight = visualViewport.height;
+		} else {
+			initialViewportHeight = window.innerHeight;
+		}
+		
+		// Prevent body scroll on mobile
+		if (isMobile) {
+			document.body.style.overflow = 'hidden';
+		}
+		
 		// Scroll to bottom
-		setTimeout(() => scrollToBottom(), 100);
+		requestAnimationFrame(() => {
+			scrollToBottom();
+		});
 	}
 
 	// Close chat
@@ -165,6 +313,20 @@
 		isOpen = false;
 		chatWidget.classList.remove('active');
 		document.body.classList.remove('chat-open');
+		
+		// Reset keyboard height
+		keyboardHeight = 0;
+		
+		// Restore body scroll
+		document.body.style.overflow = '';
+		document.body.style.position = '';
+		document.body.style.width = '';
+		
+		// Reset chat container height
+		if (chatContainer) {
+			chatContainer.style.height = '';
+			chatContainer.style.maxHeight = '';
+		}
 		
 		// Blur inputs
 		if (chatInput) {
@@ -197,7 +359,7 @@
 			if (USE_AI) {
 				// Use generative AI
 				if (isDevelopment) {
-					console.log('Calling AI API:', API_PROVIDER);
+					console.log('Calling AI API:', PRODUCTION_API_PROVIDER);
 				}
 				response = await generateAIResponse(message);
 				if (isDevelopment) {
@@ -282,10 +444,20 @@
 		}
 	}
 
-	// Scroll to bottom of messages
+	// Scroll to bottom of messages (optimized for mobile)
 	function scrollToBottom() {
 		if (!chatMessages) return;
-		chatMessages.scrollTop = chatMessages.scrollHeight;
+		
+		// Use smooth scroll for better UX
+		chatMessages.scrollTo({
+			top: chatMessages.scrollHeight,
+			behavior: 'smooth'
+		});
+		
+		// Fallback for browsers that don't support scrollTo
+		if (typeof chatMessages.scrollTo !== 'function') {
+			chatMessages.scrollTop = chatMessages.scrollHeight;
+		}
 	}
 
 	// Generate AI response using selected API provider
@@ -312,11 +484,11 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 
 		try {
 			if (isDevelopment) {
-				console.log(`Using ${API_PROVIDER} API provider`);
+				console.log(`Using ${PRODUCTION_API_PROVIDER} API provider`);
 			}
 			let response;
 			
-			switch (API_PROVIDER) {
+			switch (PRODUCTION_API_PROVIDER) {
 				case 'huggingface':
 					response = await callHuggingFaceAPI(userMessage, systemPrompt, conversationHistory);
 					break;
@@ -332,7 +504,7 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 			
 			return response;
 		} catch (error) {
-			console.error(`${API_PROVIDER} API error:`, error);
+			console.error(`${PRODUCTION_API_PROVIDER} API error:`, error);
 			// Log more details for debugging
 			if (error.message) {
 				console.error('Error details:', error.message);
@@ -403,12 +575,14 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 		const isLocalhost = window.location.hostname === 'localhost' || 
 		                   window.location.hostname === '127.0.0.1' ||
 		                   window.location.hostname === '';
+		// In production, always use proxy (API key is in Cloudflare Worker)
+		// In development, use proxy if no API key, otherwise use direct API
 		const useProxy = !isLocalhost || !API_KEY;
 		
 		// Cloudflare Worker URL - Update this with your actual worker URL
 		// Format: https://cohere-proxy.your-username.workers.dev
 		// Or if using custom domain: https://api.yourdomain.com
-		const CLOUDFLARE_WORKER_URL = 'cohere-proxy.wispy-king-9050.workers.dev';
+		const CLOUDFLARE_WORKER_URL = 'https://cohere-proxy.wispy-king-9050.workers.dev';
 		
 		const apiEndpoint = useProxy 
 			? CLOUDFLARE_WORKER_URL  // Cloudflare Worker proxy (production)
