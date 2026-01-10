@@ -615,16 +615,37 @@ Always respond in first person (I, me, my). Be conversational, helpful, and auth
 				});
 
 				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}));
+					// Try to get response as text first to check if it's HTML
+					const responseText = await response.clone().text().catch(() => '');
+					const isHTML = responseText.trim().startsWith('<');
+					
+					let errorData = {};
+					if (isHTML) {
+						// Function not found - getting HTML 404 page
+						errorData = {
+							error: 'Function not found - received HTML response',
+							status: response.status,
+							message: 'The Pages Function at /api/chat is not deployed. Check Cloudflare Pages deployment logs.'
+						};
+					} else {
+						// Try to parse as JSON
+						try {
+							errorData = await response.json();
+						} catch (e) {
+							errorData = { error: responseText.substring(0, 200) };
+						}
+					}
 					
 					// Log full error details for debugging
-					if (isDevelopment || response.status === 405) {
+					if (isDevelopment || response.status === 405 || isHTML) {
 						console.error('API Error Response:', {
 							status: response.status,
 							statusText: response.statusText,
+							isHTML: isHTML,
 							errorData: errorData,
 							endpoint: apiEndpoint,
-							method: 'POST'
+							method: 'POST',
+							responsePreview: isHTML ? responseText.substring(0, 200) : 'N/A'
 						});
 					}
 					
