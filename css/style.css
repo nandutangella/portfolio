@@ -618,6 +618,15 @@ img {
 	font-size: clamp(calc(2.5rem - 5px), calc(8vw - 5px), calc(6rem - 5px));
 }
 
+/* Reduce font size of "Making useful, usable, and desirable products." on larger screens */
+@media (min-width: 1024px) {
+	.hero-line:nth-child(2),
+	.hero-line:nth-child(3),
+	.hero-line:nth-child(4) {
+		font-size: clamp(calc(2.5rem - 5px), calc(8vw - 5px), calc(6rem - 13px));
+	}
+}
+
 .hero-accent {
 	color: var(--color-black);
 	position: relative;
