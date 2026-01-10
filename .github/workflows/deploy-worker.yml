@@ -10,6 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy Worker
+    environment: github-pages
     
     steps:
       - name: Checkout
