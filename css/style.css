@@ -1030,7 +1030,7 @@ img {
 }
 
 .process-tools {
-	align-items: flex-start;
+	align-items: baseline;
 }
 
 .process-meta:last-child,
@@ -1052,9 +1052,12 @@ img {
 }
 
 .process-tools .process-tags {
-	display: inline;
+	display: inline-flex;
 	flex: 1;
 	min-width: 0;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0;
 }
 
 .process-tag {
