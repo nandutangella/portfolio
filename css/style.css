@@ -254,20 +254,24 @@ img {
 	height: 2.5rem;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-end;
 	background: linear-gradient(135deg, var(--color-black) 0%, var(--color-gray-800) 100%);
 	color: var(--color-white);
-	border-radius: 6px;
-	font-family: var(--font-signature);
-	font-size: 2rem;
-	line-height: 1;
-	font-weight: 400;
+	border-radius: 12px;
 	box-shadow: var(--shadow-md);
 	transition: all var(--transition-smooth);
 	position: relative;
 	overflow: hidden;
+}
+
+.nav-logo-glyph {
+	display: inline-block;
+	font-family: var(--font-signature);
+	font-size: 4.37rem;
+	line-height: 0.8;
+	font-weight: 400;
 	text-transform: lowercase;
-	padding-top: 0.1rem;
+	transform: translateY(-3pt);
 }
 
 .nav-logo-mark::before {
