@@ -38,60 +38,59 @@
 	<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
-		"@type": "Person",
-		"name": "Nandu Tangella",
-		"jobTitle": "Product Designer",
-		"description": "Product Designer specializing in human-computer interaction, user experience design, and creating useful, usable, and desirable products.",
-		"url": "https://nandutangella.com",
-		"sameAs": [
-			"https://x.com/nandutangella"
-		],
-		"knowsAbout": [
-			"Product Design",
-			"User Experience Design",
-			"User Interface Design",
-			"Human-Computer Interaction",
-			"AI Design",
-			"Generative AI",
-			"Design Systems",
-			"User Research",
-			"Prototyping",
-			"Figma"
-		],
-		"hasOccupation": {
-			"@type": "Occupation",
-			"name": "Product Designer",
-			"occupationLocation": {
-				"@type": "Place",
-				"name": "United States"
-			},
-			"skills": [
-				"UI/UX Design",
-				"Human-Computer Interaction",
-				"Prototyping",
-				"User Research",
-				"Design Systems",
-				"AI-Powered Design",
-				"Figma",
-				"Sketch",
-				"Cross-functional Collaboration"
-			]
-		},
-		"worksFor": [
+		"@graph": [
 			{
-				"@type": "Organization",
-				"name": "LivePerson",
-				"description": "AI Chat Analytics and Chat Builder platforms"
-			},
-			{
-				"@type": "Organization",
-				"name": "First American Title",
-				"description": "Real estate web and mobile applications"
+				"@type": "Person",
+				"@id": "https://nandutangella.com/#person",
+				"name": "Nandu Tangella",
+				"jobTitle": "Product Designer",
+				"description": "Product Designer specializing in human-computer interaction, user experience design, and creating useful, usable, and desirable products.",
+				"url": "https://nandutangella.com",
+				"image": "https://nandutangella.com/apple-touch-icon.png",
+				"sameAs": [
+					"https://x.com/nandutangella"
+				],
+				"knowsAbout": [
+					"Product Design",
+					"User Experience Design",
+					"User Interface Design",
+					"Human-Computer Interaction",
+					"AI Design",
+					"Generative AI",
+					"Design Systems",
+					"User Research",
+					"Prototyping",
+					"Figma"
+				],
+				"hasOccupation": {
+					"@type": "Occupation",
+					"name": "Product Designer",
+					"occupationLocation": {
+						"@type": "Place",
+						"name": "United States"
+					},
+					"skills": [
+						"UI/UX Design",
+						"Human-Computer Interaction",
+						"Prototyping",
+						"User Research",
+						"Design Systems",
+						"AI-Powered Design",
+						"Figma",
+						"Sketch",
+						"Cross-functional Collaboration"
+					]
+				}
 			},
 			{
-				"@type": "Organization",
-				"name": "Terradatum",
-				"description": "Real estate analytics platform"
+				"@type": "WebSite",
+				"@id": "https://nandutangella.com/#website",
+				"url": "https://nandutangella.com/",
+				"name": "Nandu Tangella",
+				"alternateName": "Nandu Tangella Portfolio",
+				"publisher": {
+					"@id": "https://nandutangella.com/#person"
+				}
 			}
 		]
 	}
@@ -115,8 +114,9 @@
 	<!-- Navigation -->
 	<nav class="nav" id="nav">
 		<div class="nav-container">
-			<a href="#" class="nav-logo">
-				<span class="nav-logo-text">NT</span>
+			<a href="/" class="nav-logo" aria-label="Nandu Tangella home">
+				<span class="nav-logo-mark" aria-hidden="true">n</span>
+				<span class="nav-logo-name">Nandu Tangella</span>
 			</a>
 			<div class="nav-links">
 				<a href="/" class="nav-link">Portfolio</a>
@@ -160,10 +160,6 @@
 				<p class="hero-description">
 					Specializing in human-computer interaction, user experience design, and creating digital experiences that matter using Generative AI.
 				</p>
-				<a href="/contact/" class="hero-availability">
-					<span class="availability-dot"></span>
-					<span class="availability-text">Available for opportunities.</span>
-				</a>
 			</div>
 		</div>
 	</section>
